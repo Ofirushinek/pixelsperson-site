@@ -13,6 +13,14 @@
    hero warm-wash / pillars background / background warm / who cool /
    offer background / proof warm / contact dark. No adjacent pair of sections
    shares a background.
+
+   Round 4 (2026-07-22): hero rebuilt as two equal columns above 1120px and
+   given an animated graphic (section 5.5); one shared agent mark introduced
+   and <use>d in four places (section 3); Background cut back and its two
+   columns bound together (section 6.5); the three doors given a family of
+   illustrations and shorter copy (section 7). Still zero new tokens: every
+   value on this page comes from the token block below. The section rhythm is
+   unchanged, so the no-adjacent-repeat check above still holds.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -638,7 +646,13 @@ h2 .line {
   opacity: 0;
 }
 
-.build-prompt .agent-mark { margin-top: 3px; }
+/* The mark holds --line-strong inside the illustrations, where it sits among
+   1px hairlines. On a prompt row it sits beside 14px near-black text, so it
+   steps up one value to stay legible without competing with the sentence. */
+.build-prompt .agent-mark {
+  margin-top: 3px;
+  color: var(--foreground-secondary);
+}
 
 /* The typing reveal. clip-path rather than an animated width, because width
    needs white-space:nowrap and the prompt has to be allowed to wrap on a
@@ -723,16 +737,16 @@ h2 .line {
 @keyframes bs-sweep {
   0%, 14%       { opacity: 0;   transform: translateY(0); }
   15%           { opacity: 0.5; transform: translateY(12px); }
-  17%           { opacity: 0.5; transform: translateY(172px); }
-  18%           { opacity: 0;   transform: translateY(196px); }
+  17%           { opacity: 0.5; transform: translateY(164px); }
+  18%           { opacity: 0;   transform: translateY(186px); }
   18.01%, 39%   { opacity: 0;   transform: translateY(0); }
   40%           { opacity: 0.5; transform: translateY(12px); }
-  42%           { opacity: 0.5; transform: translateY(172px); }
-  43%           { opacity: 0;   transform: translateY(196px); }
+  42%           { opacity: 0.5; transform: translateY(164px); }
+  43%           { opacity: 0;   transform: translateY(186px); }
   43.01%, 64%   { opacity: 0;   transform: translateY(0); }
   65%           { opacity: 0.5; transform: translateY(12px); }
-  67%           { opacity: 0.5; transform: translateY(172px); }
-  68%           { opacity: 0;   transform: translateY(196px); }
+  67%           { opacity: 0.5; transform: translateY(164px); }
+  68%           { opacity: 0;   transform: translateY(186px); }
   68.01%, 100%  { opacity: 0;   transform: translateY(0); }
 }
 
@@ -956,16 +970,35 @@ h2 .line {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 64px;
-  align-items: start;
+  align-items: stretch;
 }
 
-/* The hairline that makes the two columns one object. It sits in the gutter
-   (half of the 64px gap), not on the column edge, so it reads as a division
-   of one block rather than as the border of the right-hand one. */
+/* The hairline that makes the two columns one object. Three deliberate
+   choices in it:
+     - it sits in the middle of the 64px gutter, not on the column edge, so it
+       reads as a division of one block rather than as the border of the
+       right-hand one;
+     - align-items:stretch runs it the full height of the taller column, so it
+       is a division of the section rather than an outline of the shorter
+       column's content;
+     - it fades out at the base on exactly the same gradient the timeline
+       spine two columns to its left already uses, so the two vertical lines
+       in this section terminate the same way instead of one stopping dead. */
 .bg-aside {
-  border-left: 1px solid var(--border);
+  position: relative;
   padding-left: 32px;
   margin-left: -32px;
+}
+
+.bg-aside::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    var(--border) 0%, var(--border) 76%, transparent 100%);
 }
 
 .bg-col > .eyebrow { margin-bottom: 20px; }
@@ -978,15 +1011,16 @@ h2 .line {
   padding: 0 0 0 36px;
 }
 
-/* The spine. Starts at the centre of the Axonius accent dot (38px, derived
-   below) so the line reads as emerging from the current role, and fades out
-   at the base so it runs back in time rather than stopping at an arbitrary
-   point. Same grammar as the agent diagram's rail. */
+/* The spine. Starts at the centre of the Axonius accent dot (34.5px: the dot
+   top is derived at 31px below, plus half of its 7px) so the line reads as
+   emerging from the current role, and fades out at the base so it runs back
+   in time rather than stopping at an arbitrary point. Same grammar as the
+   agent diagram's rail. */
 .timeline::before {
   content: "";
   position: absolute;
   left: 6px;
-  top: 38px;
+  top: 34.5px;
   bottom: 0;
   width: 1px;
   background: linear-gradient(to bottom,
@@ -1168,6 +1202,15 @@ h2 .line {
 .door-entry strong {
   color: var(--foreground);
   font-weight: 600;
+}
+
+/* Doors 2 and 3 both genuinely start at Assess, so the repeat that looked
+   like a bug is fixed by qualifying it rather than by naming a different
+   stage. The separator is the middle dot the page already uses in
+   .cred-meta and .stage-tag, not a dash - there are no dashes on this page. */
+.door-qual::before {
+  content: "\00B7";
+  margin: 0 6px 0 2px;
 }
 
 /* --------------------------------------------------------------------------
@@ -1774,13 +1817,21 @@ h2 .line {
   .wrap { padding: 0 var(--pad-x-lg); }
 }
 
-/* Below 1120px the container stops being capped, the headline grows relative
-   to it, and the clear channel beside it closes. Both flanking motifs need
-   real margin, so below this they go rather than shrink into the copy. */
-@media (max-width: 1120px) {
-  .hero-motif { display: none; }
+/* Below 1120px the container stops being capped and the clear channel beside
+   the copy closes. The contact motif needs real margin, so below this it goes
+   rather than shrink into the copy.
+
+   The hero graphic does NOT go: it is the centrepiece now, not a flourish, so
+   it stacks under the copy instead. Capped at 460px so it stays a graphic
+   rather than a banner on a tablet, and left aligned with the copy above it. */
+@media (max-width: 1119px) {
   .contact-motif { display: none; }
   .hero::after { opacity: 0.7; }
+
+  .hero-art {
+    max-width: 460px;
+    margin: 56px 0 0;
+  }
 }
 
 /* Diagram: below 960px the hub-and-spoke becomes a vertical spine.
@@ -1876,19 +1927,6 @@ h2 .line {
   .n3::before { top: 32px; }
 }
 
-/* Background stat row. The three labels total ~603px at 12px, so with the
-   .stats 56px column gap they stop fitting on one line below ~900px and wrap
-   2 + 1, which reads as unresolved rather than deliberate. In this band they
-   become an explicit 3-column grid instead: the labels wrap to two lines but
-   stay aligned. Below 680px the flex stack takes over, which is correct. */
-@media (min-width: 680px) and (max-width: 900px) {
-  .stats.bg-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-  }
-}
-
 /* Doors: 3 -> 2 -> 1 columns. */
 @media (max-width: 1040px) {
   .door-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1900,8 +1938,19 @@ h2 .line {
   .pillar-art { padding: 28px; }
 
   /* Background: timeline first, then the aside. The timeline is the substance,
-     so it keeps the top of the section when the columns stack. */
-  .bg-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+     so it keeps the top of the section when the columns stack. The gutter
+     hairline becomes a horizontal rule, which is the same "one object, two
+     parts" signal turned through ninety degrees. */
+  .bg-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+
+  .bg-aside {
+    border-top: 1px solid var(--border);
+    padding-left: 0;
+    margin-left: 0;
+    padding-top: 40px;
+  }
+
+  .bg-aside::before { display: none; }
 
   /* Sprint collapses to one column but stays a sequence: the rail turns
      vertical, the chevrons point down. */
@@ -1949,6 +1998,20 @@ h2 .line {
   .hero-title { font-size: 28px; }
 }
 
+/* Measured, not guessed: at 14px the longest prompt needs 303px of text
+   column and only gets 293px at 375px viewport, so it wraps to two lines and
+   the graphic grows by 63px for no gain. One step down the type scale puts
+   all three back on one line from 360px up. Below that they wrap, which is
+   fine - the rows are always in the flow at full height, so a wrap changes
+   the graphic's height but can never shift the page mid-loop. */
+@media (max-width: 400px) {
+  .build-prompt {
+    font-size: var(--text-caption);
+    padding: 9px 12px;
+    gap: 8px;
+  }
+}
+
 @media (max-width: 720px) {
   .section { padding: 72px 0; }
   .section-head { margin-bottom: 40px; }
@@ -1963,21 +2026,22 @@ h2 .line {
 
   .door { padding: 24px; }
   .door h3 { font-size: var(--text-h3); }
+  .door-art { margin-bottom: 20px; }
+  .door-art svg { width: 104px; }
   .stage { padding: 36px 24px 28px; }
 
-  .stats.bg-stats { padding-bottom: 32px; margin-bottom: 40px; }
   .timeline { padding-left: 28px; }
-  .timeline::before { left: 5px; top: 34px; }
+  .timeline::before { left: 5px; top: 32.5px; }
   .role::before { left: -26.5px; }
   .role { margin-bottom: 28px; }
-  .role-lead { padding: 22px 20px; }
+  .role-lead { padding: 20px; }
   .role-lead h3 { font-size: var(--text-h3); }
-  /* 22px padding + half the 25.2px badge-height role-head row, minus half the dot */
-  .role-lead::before { top: 31px; }
+  /* 20px padding + half the 25.2px badge-height role-head row, minus half the dot */
+  .role-lead::before { top: 29px; }
   .role-lead .role-body { font-size: var(--text-sm); }
   /* "Director of Product Design" plus its dates no longer fit on one line at
-     phone widths, so both Axonius titles stack their dates rather than only
-     the longer one wrapping. Deterministic instead of flex-wrap roulette. */
+     phone widths, so the title stacks its dates deterministically rather than
+     leaving it to flex-wrap. */
   .role-lead .role-title { flex-direction: column; align-items: flex-start; gap: 2px; }
   .portfolio h3 { font-size: var(--text-h3); }
   .portfolio p { font-size: var(--text-sm); }
@@ -2021,5 +2085,6 @@ h2 .line {
 @media print {
   .site-header { position: static; }
   .agent-map, .browser { box-shadow: none; }
-  .hero-motif, .contact-motif { display: none; }
+  .contact-motif { display: none; }
+  /* The hero graphic prints in its composed still - see section 5.5. */
 }
