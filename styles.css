@@ -464,7 +464,11 @@ h2 .line {
   margin: 0 0 40px;
 }
 
-.hero-actions {
+/* Button row. ONE definition for every action row on the page (hero, contact),
+   so the gap between two actions can never drift between sections. Alignment is
+   the only thing each surface sets for itself. */
+.hero-actions,
+.contact-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1781,11 +1785,49 @@ h2 .line {
 
 .contact .btn { padding: 0 40px; }
 
-.contact-meta {
-  margin: 24px 0 0;
-  font-size: var(--text-sm);
-  color: var(--modal-text-secondary);
+.contact-actions { justify-content: center; }
+
+/* The outline button on the dark close. Same component as .btn-secondary, only
+   recoloured for this surface - exactly how .contact .eyebrow is handled - so
+   there is still one outline button on the page, not two.
+   Border is --modal-text-muted (#71717A on #1B1B1D): clearly present, clearly
+   subordinate to the filled white primary sitting beside it. Label stays
+   --modal-text (18.9:1).
+   HOVER DEVIATES FROM THE LIGHT VARIANT ON PURPOSE: on light, .btn-secondary
+   fills solid black. Filling solid white here would momentarily produce two
+   identical white pills side by side and destroy the primary/secondary
+   hierarchy, so the dark variant fills with --modal-surface-hover and brightens
+   its border instead. */
+.contact .btn-secondary {
+  border-color: var(--modal-text-muted);
+  color: var(--modal-text);
 }
+
+.contact .btn-secondary:hover {
+  background: var(--modal-surface-hover);
+  border-color: var(--modal-text);
+  color: var(--modal-text);
+}
+
+/* Scarcity line. Now a full sentence, so it is width-capped and centred: at 720px
+   it would otherwise set as one very long 14px line under two short buttons. */
+.contact-meta {
+  margin: 24px auto 0;
+  max-width: 52ch;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--modal-text-secondary);
+  text-wrap: balance;
+}
+
+/* Deterministic break at the comma. See the note in index.html. */
+.meta-br { display: block; }
+
+/* The global focus ring is --ring (#020817), which is effectively invisible on
+   --modal-bg. Found while adding the second action here: the email button had
+   the same problem already. Scoped override so both controls on the dark close
+   stay keyboard-visible. */
+.contact :focus-visible { outline-color: var(--modal-text); }
 
 /* --------------------------------------------------------------------------
    11. FOOTER - continues the dark close, no seam
@@ -1991,6 +2033,9 @@ h2 .line {
    the fallback typeface if Inter fails to load. */
 @media (max-width: 620px) {
   .hero-br { display: block; }
+  /* Line 1 of the scarcity sentence (353px) no longer fits inside the padded
+     width here, so the forced break is dropped and balance handles it. */
+  .meta-br { display: none; }
 }
 
 /* Absolute-smallest-phone safety valve (320-360px). */
@@ -2069,6 +2114,9 @@ h2 .line {
 
   .contact h2 { font-size: var(--text-h1); }
   .contact-body { font-size: var(--text-body); }
+  /* Two full-width actions stacked. Explicit column + tighter gap: 24px between
+     two stacked full-width buttons reads as two unrelated blocks. */
+  .contact-actions { flex-direction: column; align-items: stretch; gap: 12px; }
   .contact .btn { width: 100%; padding: 0 16px; }
 
   .footer-inner { flex-direction: column; align-items: flex-start; }
