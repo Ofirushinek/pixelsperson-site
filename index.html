@@ -89,12 +89,22 @@
          THE HERO GRAPHIC (round 4). A product surface that rebuilds itself as
          direction is typed at it, on a continuous 14s loop.
 
-         Sequence, three times per cycle: a prompt row fades in, its text types
+         Sequence, three times per cycle: a prompt row fades in, its bars type
          on left to right, an accent hairline sweeps the surface, then the
          surface visibly responds. Beat 1 expands the title and adds navigation
          rows; beat 2 duplicates the tiles into a second row and drops their
          height; beat 3 shifts the column widths, flags one tile and adds a
          review pin. Then the prompts clear and the surface eases back to base.
+
+         ROUND 5 - THE PROMPT ROWS CARRY NO LITERAL COPY. They were real
+         sentences; they are now skeleton bars in the same rounded grey bar
+         vocabulary the wireframe above already uses for its own content.
+         Readable sentences invited the viewer to read and judge them, which
+         pulled attention off the surface that is actually changing, and the
+         surface is the entire point. Two bars per row, the second shorter, so
+         a row reads as a wrapped instruction rather than as a progress bar.
+         The agent mark stays: it is what identifies the row as direction
+         arriving rather than as more wireframe.
 
          Pure CSS keyframes on inline SVG. No JavaScript, no library, no build
          step. Nothing that animates affects document layout: the SVG has a
@@ -108,8 +118,12 @@
          The wireframe elements carry .bs (shared timing) plus one class per
          animated part, so the timeline is readable in one place in the CSS.
          --------------------------------------------------------------------- -->
+    <!-- role="img" plus one label is the whole accessible name: the graphic is
+         a single illustration, and its parts carry no information on their own.
+         The label describes the MECHANIC, which is what the graphic argues, and
+         it no longer quotes any sentence, because there are none to quote. -->
     <div class="hero-art" role="img"
-         aria-label="An animated wireframe of a product screen that rebuilds itself as short lines of product direction are typed at it: the heading grows, the tiles duplicate into a grid, the column widths shift, and one card is flagged for review.">
+         aria-label="An animated wireframe of a product screen. Three short instructions are typed at it in turn, and after each one the screen rebuilds itself: the heading grows, the tiles duplicate into a grid, the column widths shift, and one card is flagged for review.">
 
       <svg class="build-screen" viewBox="0 0 440 240" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -168,18 +182,21 @@
         </g>
       </svg>
 
-      <ul class="build-prompts">
+      <!-- aria-hidden because the parent already carries the full description.
+           Without it a screen reader can still reach a three item list whose
+           items have no text, which is worse than silence. -->
+      <ul class="build-prompts" aria-hidden="true">
         <li class="bs build-prompt bp1">
-          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
-          <span class="bs bt1">Tighten the hierarchy at the top of the page.</span>
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none"><use href="#agent-mark"/></svg>
+          <span class="bp-lines"><i class="bs bp-bar bt1a"></i><i class="bs bp-bar bt1b"></i></span>
         </li>
         <li class="bs build-prompt bp2">
-          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
-          <span class="bs bt2">Split the results into a two column grid.</span>
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none"><use href="#agent-mark"/></svg>
+          <span class="bp-lines"><i class="bs bp-bar bt2a"></i><i class="bs bp-bar bt2b"></i></span>
         </li>
         <li class="bs build-prompt bp3">
-          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
-          <span class="bs bt3">Flag the card that fails our contrast rule.</span>
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none"><use href="#agent-mark"/></svg>
+          <span class="bp-lines"><i class="bs bp-bar bt3a"></i><i class="bs bp-bar bt3b"></i></span>
         </li>
       </ul>
     </div>

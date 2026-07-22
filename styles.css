@@ -585,15 +585,18 @@ h2 .line {
       %      s     what happens
      ----   ----   ---------------------------------------------------------
       3-6    0.4    prompt row 1 fades up
-      6-12   0.9    its text types on, left to right
+      6-10   0.9    bar A types on, left to right
+     10-12.5 1.4    bar B types on (the row's second, shorter line)
      14-18   2.0    accent hairline sweeps the surface  (the "thinking" beat)
      19-22   2.7    BEAT 1: heading expands, two nav rows appear
      28-31   3.9    prompt row 2 fades up
-     31-37   4.3    types on
+     31-35   4.3    bar A types on
+     35-37.5 4.9    bar B types on
      39-43   5.5    sweep
      44-47   6.2    BEAT 2: tiles duplicate into a second row, heights drop
      53-56   7.4    prompt row 3 fades up
-     56-62   7.8    types on
+     56-60   7.8    bar A types on
+     60-62.5 8.4    bar B types on
      64-68   9.0    sweep
      69-72   9.7    BEAT 3: column widths shift, one tile is flagged, pin and
                     status chip appear
@@ -607,6 +610,11 @@ h2 .line {
    its own coordinate space and never reaches document layout. All three
    prompt rows are permanently in the flow at full height from first paint and
    only their opacity changes, so the stack never grows or shrinks.
+
+   ROUND 5: the prompt rows lost their literal sentences and became skeleton
+   bars. Everything above is unchanged - same 14s, same three beats, same
+   cause and effect - only what fades up and types on changed. See the
+   .bp-bar block below for why.
 
    PROPERTY CHOICE: geometry is animated with `width` / `height` (SVG geometry
    presentation attributes are real CSS properties, so the corner radii stay
@@ -633,7 +641,7 @@ h2 .line {
 
 /* Same card family as everything else on the page: white, 1px --border,
    shadow-sm. 8px radius rather than the pill used by the decorative node
-   chips, because these hold a full sentence and a pill would read as a chat
+   chips, because these hold a two line block and a pill would read as a chat
    bubble. */
 .build-prompt {
   display: flex;
@@ -644,27 +652,61 @@ h2 .line {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  font-size: var(--text-sm);
-  line-height: 1.45;
-  color: var(--foreground);
   opacity: 0;
 }
 
 /* The mark holds --line-strong inside the illustrations, where it sits among
-   1px hairlines. On a prompt row it sits beside 14px near-black text, so it
-   steps up one value to stay legible without competing with the sentence. */
+   1px hairlines. Here it sits beside bars that are themselves --line-strong,
+   so it steps up one value and stays distinct from the content it introduces.
+   It is also the only thing left that says "this row is direction arriving",
+   now that the sentences are gone, so it must not recede.
+   -2.5px is (8 - 13) / 2: it centres the 13px mark on bar A's 8px centre
+   line. The offset is taken on the mark rather than on the bars so the card
+   keeps a symmetric 10px of padding around its actual content, and the mark
+   overhangs into padding it has room for (2.5 of 10px, 2.5 of 9px on the
+   small-phone rule). */
 .build-prompt .agent-mark {
-  margin-top: 3px;
+  margin-top: -2.5px;
   color: var(--foreground-secondary);
 }
 
-/* The typing reveal. clip-path rather than an animated width, because width
-   needs white-space:nowrap and the prompt has to be allowed to wrap on a
-   phone. steps() is what makes it read as typing rather than as a wipe. */
-.build-prompt span {
+/* ROUND 5 - PLACEHOLDER BARS INSTEAD OF SENTENCES.
+   The rows used to carry real product direction ("Tighten the hierarchy at
+   the top of the page." and two more). Readable copy invited the viewer to
+   read and evaluate the sentences, which pulled attention off the surface
+   that is actually changing, and the changing surface is the whole argument.
+   Bars keep it about the mechanic and they speak the same monochrome
+   wireframe language as everything above them.
+
+   HEIGHT: 8px, which is what the surface's own 7 unit rail bars render at
+   (440 unit viewBox drawn across a 492px column = x1.118). So a prompt bar
+   and a wireframe bar are the same object at the same size, not two
+   different greys at two different weights.
+   COLOUR: --line-strong, one step up from the --line used by most bars
+   inside the surface. The instruction should be the firmest bar in the
+   composition after the near black title bar. */
+.bp-lines {
   display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.bp-bar {
+  display: block;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  /* The reveal is a clip, not an animated width. Identical to the eye on a
+     solid bar, but it never touches layout, so no row can reflow mid loop.
+     The square right hand edge while the bar grows is precisely what makes
+     it read as text being typed rather than as a bar filling up; the rounded
+     cap only arrives when the line lands. steps() supplies the cadence. */
   clip-path: inset(0 100% 0 0);
 }
+
+/* 7px between the two lines of a row: tight enough that they read as one
+   wrapped instruction, open enough that they are two lines and not a block. */
+.bp-bar + .bp-bar { margin-top: 7px; }
 
 /* Parts that are not present in the resting state. Declared here rather than
    only inside a keyframe so that if animations never run at all - reduced
@@ -695,9 +737,28 @@ h2 .line {
 .bp1 { animation-name: bs-p1; }
 .bp2 { animation-name: bs-p2; }
 .bp3 { animation-name: bs-p3; }
-.bt1 { animation-name: bs-t1-type; animation-timing-function: steps(28, end); }
-.bt2 { animation-name: bs-t2-type; animation-timing-function: steps(26, end); }
-.bt3 { animation-name: bs-t3-type; animation-timing-function: steps(26, end); }
+/* Bar A is always the full column and only bar B varies, because that is how
+   a wrapped sentence actually behaves: the first line fills, the last one
+   does not. Three different B widths so the three rows are not one shape
+   repeated. */
+.bt1a, .bt2a, .bt3a { width: 100%; }
+.bt1b { width: 58%; }
+.bt2b { width: 71%; }
+.bt3b { width: 46%; }
+
+/* Two animations per row rather than one, because a single clip across both
+   bars would wipe them together and read as a reveal, not as typing. B starts
+   the instant A lands, so the pair reads as one continuous line of thought
+   wrapping.
+   The steps() counts are set proportional to each bar's width, so every bar
+   advances by roughly the same 10px per step and all six read as one typing
+   rate rather than as six elements each doing their own thing. */
+.bt1a { animation-name: bs-t1a-type; animation-timing-function: steps(24, end); }
+.bt1b { animation-name: bs-t1b-type; animation-timing-function: steps(14, end); }
+.bt2a { animation-name: bs-t2a-type; animation-timing-function: steps(24, end); }
+.bt2b { animation-name: bs-t2b-type; animation-timing-function: steps(17, end); }
+.bt3a { animation-name: bs-t3a-type; animation-timing-function: steps(24, end); }
+.bt3b { animation-name: bs-t3b-type; animation-timing-function: steps(11, end); }
 
 @keyframes bs-p1 {
   0%, 3%    { opacity: 0; transform: translateY(8px); }
@@ -715,20 +776,39 @@ h2 .line {
   90%, 100% { opacity: 0; transform: translateY(8px); }
 }
 
-@keyframes bs-t1-type {
-  0%, 6%    { clip-path: inset(0 100% 0 0); }
-  12%, 87%  { clip-path: inset(0 0 0 0); }
-  89%, 100% { clip-path: inset(0 100% 0 0); }
+/* Every bar resets in the 0.01% after 90%, not across 87-89% as the sentences
+   used to. The row's own opacity hits 0 at exactly 90% (bs-p1/2/3), so the
+   reset is now genuinely unseen instead of happening under a fade that is
+   still one third visible. Same instant-cut trick the sweep already uses. */
+@keyframes bs-t1a-type {
+  0%, 6%       { clip-path: inset(0 100% 0 0); }
+  10%, 90%     { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
 }
-@keyframes bs-t2-type {
-  0%, 31%   { clip-path: inset(0 100% 0 0); }
-  37%, 87%  { clip-path: inset(0 0 0 0); }
-  89%, 100% { clip-path: inset(0 100% 0 0); }
+@keyframes bs-t1b-type {
+  0%, 10%      { clip-path: inset(0 100% 0 0); }
+  12.5%, 90%   { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
 }
-@keyframes bs-t3-type {
-  0%, 56%   { clip-path: inset(0 100% 0 0); }
-  62%, 87%  { clip-path: inset(0 0 0 0); }
-  89%, 100% { clip-path: inset(0 100% 0 0); }
+@keyframes bs-t2a-type {
+  0%, 31%      { clip-path: inset(0 100% 0 0); }
+  35%, 90%     { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
+}
+@keyframes bs-t2b-type {
+  0%, 35%      { clip-path: inset(0 100% 0 0); }
+  37.5%, 90%   { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
+}
+@keyframes bs-t3a-type {
+  0%, 56%      { clip-path: inset(0 100% 0 0); }
+  60%, 90%     { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
+}
+@keyframes bs-t3b-type {
+  0%, 60%      { clip-path: inset(0 100% 0 0); }
+  62.5%, 90%   { clip-path: inset(0 0 0 0); }
+  90.01%, 100% { clip-path: inset(0 100% 0 0); }
 }
 
 /* --- the "thinking" sweep, three times per cycle. Linear: an eased sweep
@@ -869,7 +949,9 @@ h2 .line {
   .bs-g2, .bs-g4 { transform: translateX(36px); }
   .bs-pin { transform: scale(1); }
   .bs-scan { display: none; }
-  .build-prompt span { clip-path: none; }
+  /* The bars already carry their final width in CSS, so dropping the clip is
+     all that is needed to show every row fully typed. */
+  .bp-bar { clip-path: none; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2043,15 +2125,14 @@ h2 .line {
   .hero-title { font-size: 28px; }
 }
 
-/* Measured, not guessed: at 14px the longest prompt needs 303px of text
-   column and only gets 293px at 375px viewport, so it wraps to two lines and
-   the graphic grows by 63px for no gain. One step down the type scale puts
-   all three back on one line from 360px up. Below that they wrap, which is
-   fine - the rows are always in the flow at full height, so a wrap changes
-   the graphic's height but can never shift the page mid-loop. */
+/* Round 4 stepped the prompt type down one size here, because at 14px the
+   longest sentence needed 303px of column and only got 293px at 375px, so it
+   wrapped. Round 5 removed the sentences, so that constraint is gone: the
+   bars are percentage widths and rescale on their own at every viewport, and
+   the rows are a fixed height at all widths. Only the card padding is still
+   worth tightening on a small phone. */
 @media (max-width: 400px) {
   .build-prompt {
-    font-size: var(--text-caption);
     padding: 9px 12px;
     gap: 8px;
   }
