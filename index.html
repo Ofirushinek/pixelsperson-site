@@ -45,11 +45,19 @@
 
 <!-- ==========================================================================
      HERO
-     H1 LOCKED (Ofir, round 3):
-       I'm an AI-native product designer.
+     H1 (Ofir, round 6 - his name is now in the headline):
+       I'm Ofir, an AI-native product designer.
        I move at a pace teams don't expect.
      The AI fragment stays wrapped in <em class="ai-mark"> - that highlight is
      how the AI signal is made visual without breaking the black-text rule.
+
+     ROUND 6 - THE TWO SENTENCES ARE NO LONGER THE SAME SIZE. Sentence one is
+     the identity statement and carries the focus; sentence two is the
+     supporting claim and steps down to 0.65 of it. Still ONE h1 semantically:
+     the step is applied to a <span>, not to a second element, so the outline
+     is unchanged and a screen reader still reads one heading.
+     The header wordmark already says "Ofir Rushinek", so "I'm Ofir" reads as
+     an introduction rather than a repetition.
      ========================================================================== -->
 <section class="hero">
   <div class="wrap hero-inner">
@@ -62,20 +70,39 @@
         Product &amp; UX, at AI speed
       </p>
 
-      <!-- The <br class="hero-br"> elements are load-bearing, not decoration.
-           Each sentence is one line down to 620px; below that each breaks at a
-           measured, deliberate point instead of wherever the browser decides.
-           (Chrome's text-wrap:balance silently gives up on any line containing
-           an inline element, which is what produced the ragged one-word drop.)
-           Round 4: they also come back at 1120px and up, where the copy column
-           is a constant 492px. Measured at 52px Inter with -0.025em tracking:
-           the longest of the four fragments, "teams don't expect.", is 7.701em
-           = 400px, so all four lines clear a 492px column with 92px to spare
-           even before the 6% fallback-typeface allowance.
-           If the headline copy changes, re-place these two breaks. -->
+      <!-- The two <br> elements are load-bearing, not decoration. They break
+           each sentence at a measured point instead of wherever the browser
+           decides. (Chrome's text-wrap:balance silently gives up on any line
+           containing an inline element, which is what produced the ragged
+           one-word drop in round 1.)
+
+           ROUND 6 - RE-MEASURED FROM SCRATCH. Round 4's numbers were taken
+           against a 492px copy column and both sentences at 52px; the column
+           is now 544px and sentence two is 0.65em. Nothing was reused.
+           All widths below are Inter with the real -0.025em tracking, and
+           every "fits" allows a further 6% for the fallback typeface.
+
+           SENTENCE 1, weight 600, 52px. Whole: 15.934em = 829px, so it has to
+           break inside a 544px column. Three candidate breaks were measured:
+             after "AI-native"  440px / 380px   <- used
+             after "an"         225px / 594px   (594px overflows 544px)
+             after "Ofir,"      165px / 657px   (overflows)
+           Only the first fits, and it is also the break round 4 already used,
+           so the AI highlight still lands at the end of a line.
+           440px + 6% = 466px inside 544px: 78px spare.
+
+           SENTENCE 2, weight 400, 0.65em = 33.8px. Whole: 14.185em = 480px,
+           +6% = 508px, which CLEARS the 544px column with 36px spare. So on
+           a wide screen it is one unbroken line and the headline reads
+           2 heavy lines + 1 light one - which is what makes the size step
+           read as hierarchy rather than as two stanzas. Its break is
+           therefore .hero-br-narrow: needed only below 620px, where the whole
+           headline goes to four lines.
+
+           If the headline copy changes, re-measure. Do not reuse these. -->
       <h1 class="hero-title">
-        <span class="line">I'm an <em class="ai-mark">AI-native</em><br class="hero-br"> product designer.</span>
-        <span class="line line-2">I move at a pace<br class="hero-br"> teams don't expect.</span>
+        <span class="line">I'm Ofir, an <em class="ai-mark">AI-native</em><br class="hero-br"> product designer.</span>
+        <span class="line line-2">I move at a pace<br class="hero-br-narrow"> teams don't expect.</span>
       </h1>
 
       <p class="hero-sub">Twelve years of product and UX judgment, five of them leading product design inside cybersecurity. What's different now is speed: decisions become flows, specs, and working prototypes in days instead of months.</p>
@@ -203,8 +230,9 @@
 
     <!-- Glance-level credibility. The substance lives in the Background
          section further down; this strip only has to answer "who is this".
-         Round 4: it spans the full width beneath both hero columns, because
-         three inline credentials cannot hold together in a 492px column. -->
+         It spans the full width beneath both hero columns, because three
+         inline credentials cannot hold together in one column (492px in round
+         4, 544px after round 6 widened the copy - still not enough). -->
     <ul class="cred-bar">
       <li><strong>Axonius</strong><span>Director of Product Design</span><span class="cred-meta">Cybersecurity &middot; 2021-2026</span></li>
       <li><strong>Salesforce</strong><span>Senior Manager, UX/UI</span><span class="cred-meta">2020-2021</span></li>

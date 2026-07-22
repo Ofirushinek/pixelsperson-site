@@ -105,7 +105,9 @@
   /* --- Type: Glimps scale (design-system.md sec.2.2).
          --text-hero is the ONE added step: Glimps tops out at 36px Display and
          has no marketing surface. Raised in round 2 from a 42px ceiling to 52px
-         so the hero carries the page. Everything else is on-scale. --- */
+         so the hero carries the page. Everything else is on-scale.
+         The h1's second sentence is NOT a token: it is 0.65 of whatever this
+         resolves to, floored at --text-h1. See .hero-title .line-2. --- */
   --text-hero: clamp(30px, 4.9vw, 52px);
   --text-display: 36px;
   --text-h1: 24px;
@@ -384,27 +386,45 @@ img { display: block; max-width: 100%; height: auto; }
 
 .hero-inner { position: relative; z-index: 1; }
 
-/* --- HERO PROPORTIONS (round 4) ------------------------------------------
-   Ofir: "I want the text to hold to a third of the page width and the graphic
-   to hold one third. Right now the text occupies too much space."
+/* --- HERO PROPORTIONS (round 6) ------------------------------------------
+   Ofir, round 6: "It will be nice if the text occupies more space out of the
+   width, so the animation will be a bit narrower."
 
-   Two equal columns inside the 1120px container with a 72px gutter, so at the
-   32px page padding each column is a constant 492px. Against a 1440px
-   viewport that is 34% for the copy and 34% for the graphic, with the
-   remaining third spread across the two outer margins and the gutter. Because
-   the container is capped, that 492px is identical at every width from 1120px
-   up: the columns never drift, exactly like the round-2 motif channel.
+   This supersedes round 4's two equal 492px columns. The 1120px container at
+   32px padding leaves 1056px of content, minus the 72px gutter = 984px to
+   share. The graphic column is now pinned at 440px and the copy column takes
+   the remainder, a constant 544px. Because the container is capped, both are
+   identical at every width from 1120px up - the columns never drift, exactly
+   like the round-2 motif channel. Against a 1440px viewport that is 37.8%
+   copy / 30.6% graphic.
+
+   WHY 440px IS THE FLOOR, AND WHY IT IS EXPRESSED AS A FIXED TRACK RATHER
+   THAN A RATIO. The wireframe's viewBox is 440 units wide, so at a 440px
+   column it draws at exactly x1.000: every value in that SVG renders at the
+   size it was authored at. Its 1-unit hairlines are exactly 1px, its 7-unit
+   rail bars exactly 7px, its 5-unit tile bars exactly 5px, and the HTML
+   prompt bar below it can be an integer 7px and be genuinely the same object
+   as a rail bar rather than approximately one (see .bp-bar).
+
+   Below 440px the drawing is being reduced: the hairlines go sub-pixel and
+   the 5px tile bars fall to 4.5px and under, which is the point where the
+   surface stops looking drawn and starts looking soft. Renders at 460 / 440 /
+   420 / 400 / 380 / 360 / 340 were compared before choosing. It still reads
+   as a product screen well below 440 - the stop is not "it breaks here", it
+   is "this is the last width at which the drawing is at its authored size and
+   the two bar systems are exactly equal". Going narrower buys the copy column
+   40px and costs that. Not worth it.
 
    Split at 1120px rather than scaling the columns down: below that the
    container stops being capped and a two-column hero would squeeze both the
-   headline and the prompt text at the same time. Stacked is better there.
+   headline and the graphic at the same time. Stacked is better there.
 
    The credibility strip spans the full width beneath both columns - three
-   inline credentials cannot hold together in 492px.                          */
+   inline credentials cannot hold together in 544px either.                   */
 @media (min-width: 1120px) {
   .hero-inner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 440px;
     grid-template-areas:
       "copy art"
       "cred cred";
@@ -438,9 +458,56 @@ h2 .line {
   text-wrap: balance;
 }
 
-.hero-title .line-2 { font-weight: 400; }
+/* ROUND 6 - THE SECOND SENTENCE STEPS DOWN.
+   Ofir: "I want the text below to be a bit smaller. Therefore it will be more
+   balanced, and the title will have more focus."
 
-.hero-br { display: none; }
+   The step is a RATIO, not a second type token: 0.65em resolves against the
+   h1's own computed size, so the relationship between the two sentences is
+   identical at every viewport and survives any future change to --text-hero
+   without a second clamp to keep in sync. Same pattern the page already uses
+   for .ai-mark's 0.42em highlight and 0.06em padding - a value that only
+   means anything relative to the type it sits on.
+
+   0.65 rather than a gentler step because the brief asked for an obvious
+   hierarchy, and because it is what lets the sentence sit UNBROKEN on one
+   line in the 544px column (480px + 6% fallback = 508px). A 0.8 step would
+   have forced it back onto two lines and the headline would have read as two
+   equal stanzas again.
+   At 52px that is 33.8px, i.e. 52 / 33.8 / 18 down the hero. Weight already
+   differs too (600 vs 400), so the hierarchy is carried on two axes.
+
+   THE FLOOR IS A TOKEN, NOT AN INVENTED NUMBER. Pure em would keep shrinking
+   with the clamp: at the 30px bottom of --text-hero, 0.65em is 19.5px, which
+   is level with the 18px hero sub and the step stops meaning anything. Held
+   at --text-h1 (24px), the smallest headline step on the scale, so on a phone
+   the ratio compresses to ~0.8 - which is correct behaviour. There is not
+   room for a 35% size step inside a 328px padded column.
+
+   THE MARGIN IS NOT OPTICAL PADDING, IT REPAIRS A REVERSED GAP. Line-height
+   is a multiple of font size, so once sentence two is 0.65em its leading
+   collapses to 0.65 of sentence one's. The first render came out with 58px
+   between the two WRAPPED lines of sentence one and only 43px between the two
+   SENTENCES - a break inside a sentence reading as a bigger pause than the
+   break between them, which is why it looked crowded. 0.5em, i.e. half a line
+   of the SMALLER type (margin em resolves against this element's own size,
+   not the h1's), adds 17px and puts the between-sentence gap back above the
+   within-sentence one. Set in em rather than px so it stays proportional
+   instead of becoming a fixed lump under a 30px headline on a phone. */
+.hero-title .line-2 {
+  font-size: max(var(--text-h1), 0.65em);
+  font-weight: 400;
+  margin-top: 0.5em;
+}
+
+/* Both breaks are off by default. .hero-br (sentence 1) comes back below
+   620px AND at 1120px and up, where the copy column is a constant 544px and
+   the 829px sentence has to break. .hero-br-narrow (sentence 2) comes back
+   below 620px only: at 0.65em the sentence clears 544px unbroken, so forcing
+   a break there would cost the headline its 2-heavy-lines-plus-1-light-line
+   shape for nothing. */
+.hero-br,
+.hero-br-narrow { display: none; }
 
 /* The AI signal, made visual: a highlight that sits behind the text baseline
    rather than an inline color change. Keeps the headline black. */
@@ -660,13 +727,14 @@ h2 .line {
    so it steps up one value and stays distinct from the content it introduces.
    It is also the only thing left that says "this row is direction arriving",
    now that the sentences are gone, so it must not recede.
-   -2.5px is (8 - 13) / 2: it centres the 13px mark on bar A's 8px centre
-   line. The offset is taken on the mark rather than on the bars so the card
-   keeps a symmetric 10px of padding around its actual content, and the mark
-   overhangs into padding it has room for (2.5 of 10px, 2.5 of 9px on the
-   small-phone rule). */
+   -3px is (7 - 13) / 2: it centres the 13px mark on bar A's 7px centre line.
+   Derived, not eyeballed, and it moved with the bar height in round 6 (was
+   -2.5px against an 8px bar). The offset is taken on the mark rather than on
+   the bars so the card keeps a symmetric 10px of padding around its actual
+   content, and the mark overhangs into padding it has room for (3 of 10px,
+   3 of 9px on the small-phone rule). */
 .build-prompt .agent-mark {
-  margin-top: -2.5px;
+  margin-top: -3px;
   color: var(--foreground-secondary);
 }
 
@@ -678,10 +746,17 @@ h2 .line {
    Bars keep it about the mechanic and they speak the same monochrome
    wireframe language as everything above them.
 
-   HEIGHT: 8px, which is what the surface's own 7 unit rail bars render at
-   (440 unit viewBox drawn across a 492px column = x1.118). So a prompt bar
-   and a wireframe bar are the same object at the same size, not two
-   different greys at two different weights.
+   HEIGHT: 7px, which is what the surface's own 7 unit rail bars render at.
+   So a prompt bar and a wireframe bar are the same object at the same size,
+   not two different greys at two different weights.
+   ROUND 6 RETUNE - THIS NUMBER IS COUPLED TO THE ART COLUMN WIDTH AND MUST
+   MOVE WITH IT. It was 8px because a 440 unit viewBox across round 4's 492px
+   column drew at x1.118, so a 7 unit rail bar landed on 7.83px. The column is
+   now 440px, the SVG draws at x1.000, and the rail bar is exactly 7px. Left
+   at 8px the prompt bar would have been 14% thicker than the bar it is
+   supposed to be identical to, and the claim in this comment would have
+   quietly stopped being true. If the art column is ever resized again,
+   recompute this as 7 * (column / 440) and round to an integer.
    COLOUR: --line-strong, one step up from the --line used by most bars
    inside the surface. The instruction should be the firmest bar in the
    composition after the near black title bar. */
@@ -693,7 +768,7 @@ h2 .line {
 
 .bp-bar {
   display: block;
-  height: 8px;
+  height: 7px;
   border-radius: var(--radius-full);
   background: var(--line-strong);
   /* The reveal is a clip, not an animated width. Identical to the eye on a
@@ -751,8 +826,12 @@ h2 .line {
    the instant A lands, so the pair reads as one continuous line of thought
    wrapping.
    The steps() counts are set proportional to each bar's width, so every bar
-   advances by roughly the same 10px per step and all six read as one typing
-   rate rather than as six elements each doing their own thing. */
+   advances by roughly the same distance per step and all six read as one
+   typing rate rather than as six elements each doing their own thing.
+   Round 6 note: the art column narrowed 492 -> 440, so that distance went
+   from ~10px to ~8.6px per step. Nothing here needed retuning - every bar is
+   a percentage of the same container, so the six rates stayed equal to each
+   other, which is the only thing this tuning was ever protecting. */
 .bt1a { animation-name: bs-t1a-type; animation-timing-function: steps(24, end); }
 .bt1b { animation-name: bs-t1b-type; animation-timing-function: steps(14, end); }
 .bt2a { animation-name: bs-t2a-type; animation-timing-function: steps(24, end); }
@@ -1946,14 +2025,21 @@ h2 .line {
    rather than shrink into the copy.
 
    The hero graphic does NOT go: it is the centrepiece now, not a flourish, so
-   it stacks under the copy instead. Capped at 460px so it stays a graphic
-   rather than a banner on a tablet, and left aligned with the copy above it. */
+   it stacks under the copy instead. Capped so it stays a graphic rather than a
+   banner on a tablet, and left aligned with the copy above it.
+
+   Round 6: the cap moved 460 -> 440 to match the two-column track exactly. It
+   was the one place the graphic rendered LARGER when stacked than when beside
+   the copy, and at 460 the wireframe was being drawn at x1.045 while the
+   prompt bars below it are fixed pixels. 440 makes the graphic the same size
+   in both layouts and holds the SVG at its authored x1.000 everywhere the
+   column is not being squeezed by the viewport. */
 @media (max-width: 1119px) {
   .contact-motif { display: none; }
   .hero::after { opacity: 0.7; }
 
   .hero-art {
-    max-width: 460px;
+    max-width: 440px;
     margin: 56px 0 0;
   }
 }
@@ -2114,7 +2200,8 @@ h2 .line {
    sentence (16.5em) against the container at this width, with headroom for
    the fallback typeface if Inter fails to load. */
 @media (max-width: 620px) {
-  .hero-br { display: block; }
+  .hero-br,
+  .hero-br-narrow { display: block; }
   /* Line 1 of the scarcity sentence (353px) no longer fits inside the padded
      width here, so the forced break is dropped and balance handles it. */
   .meta-br { display: none; }
