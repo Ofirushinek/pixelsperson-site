@@ -1,0 +1,2025 @@
+/* ==========================================================================
+   pixelsperson.com - Ofir Rushinek / AI Product Acceleration Sprint
+   Visual system: Glimps Design System v0.2 (see competitor-glimpse-tracker/design-system.md)
+   Static page. No build step. No framework. Tokens mirrored by hand from
+   Glimps src/index.css (HSL -> hex) so this file stays dependency free.
+
+   Round 2 (2026-07-22): reading contrast raised, three-tone atmosphere palette
+   added, illustrative motifs introduced. See section 1 notes.
+
+   Round 3 (2026-07-22): BACKGROUND section added (see section 6.5). No new
+   tokens, no new visual vocabulary - the section is built entirely out of
+   components that already existed on this page. Section rhythm re-checked:
+   hero warm-wash / pillars background / background warm / who cool /
+   offer background / proof warm / contact dark. No adjacent pair of sections
+   shares a background.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* --- Color: light surface (Glimps default mode) --- */
+  --background: #F8FAFC;          /* Glimps --background  210 40% 98%   */
+  --foreground: #020817;          /* Glimps --foreground  222.2 84% 4.9% */
+  --card: #FFFFFF;                /* Glimps --card        0 0% 100%     */
+  --secondary: #F1F5F9;           /* Glimps --secondary   210 40% 96.1% */
+  --secondary-foreground: #0F172A;/* Glimps --secondary-foreground      */
+  --muted: #F1F5F9;               /* Glimps --muted                     */
+  --muted-foreground: #64748B;    /* Glimps --muted-foreground          */
+  --border: #E2E8F0;              /* Glimps --border      214.3 31.8% 91.4% */
+  --primary: #000000;             /* Glimps --primary     0 0% 0%       */
+  --primary-foreground: #FFFFFF;  /* Glimps --primary-foreground        */
+  --accent: #3385FF;              /* Glimps --accent      216 100% 60%  */
+  --ring: #020817;                /* Glimps --ring                      */
+
+  /* --- ADDED, round 2: reading-contrast token ------------------------------
+     Glimps ships only two usable light-surface text values, --foreground
+     (#020817, 19.4:1 on --background) and --muted-foreground (#64748B,
+     4.7:1). Round 1 used --muted-foreground for body prose, which is the
+     low-contrast grey Ofir rejected. The gap between the two is too big to
+     hold a three-level text hierarchy, so one intermediate step is added.
+
+     #475569 is Slate-600, the exact next step in the same Tailwind slate
+     ramp that --muted-foreground (Slate-500) and --secondary-foreground
+     (~Slate-900) already come from. 7.7:1 on --background: AA for body text
+     at any size, AAA for large text.
+
+     RULE ON THIS PAGE:
+       --foreground            -> every heading and every paragraph of prose
+       --foreground-secondary  -> supporting one-liners and small meta text
+       --muted-foreground      -> NOT used for anything a visitor reads
+                                  (kept defined only for token lineage)          */
+  --foreground-secondary: #475569;
+
+  /* --- ADDED, round 2: three-tone atmosphere -------------------------------
+     Near-monochrome, carried across the whole page as surfaces only. These
+     are never used for text and never for strokes.
+       tone 1 = neutral (the existing Glimps --secondary)
+       tone 2 = cool    (--accent, desaturated to a wash)
+       tone 3 = warm    (paper, the only warm value in the system)              */
+  --tone-neutral: #F1F5F9;
+  --tone-cool: #EFF4FD;
+  --tone-warm: #F7F3EE;
+  --accent-wash: rgb(51 133 255 / 0.06);
+
+  /* --- ADDED, round 2: line-work tokens ------------------------------------
+     #CBD5E1 (Slate-300) was hardcoded twice in round 1 (.door:hover and
+     .stage:hover border-color). Tokenized here and reused by the SVG art so
+     the illustrations and the UI share one stroke vocabulary.                  */
+  --line: #CBD5E1;                /* Slate-300 - structural strokes, hover borders */
+  --line-strong: #94A3B8;         /* Slate-400 - emphasis strokes                  */
+
+  /* --- Color: Dark Overlay Surface (Glimps --modal-* family, design-system.md sec.3)
+         The one named dark pattern in Glimps. Reused here for the agent-system
+         diagram and for the full-bleed contact close. --- */
+  --modal-bg: #1B1B1D;            /* Glimps --modal-bg             240 5% 11%  */
+  --modal-surface: #27272A;       /* Glimps --modal-surface        240 4% 16%  */
+  --modal-surface-hover: #313135; /* Glimps --modal-surface-hover  240 4% 20%  */
+  --modal-border: #313135;        /* Glimps --modal-border         240 4% 20%  */
+  --modal-text: #FAFAFA;          /* Glimps --modal-text           0 0% 98%    */
+  --modal-text-secondary: #A1A1AA;/* Glimps --modal-text-secondary 240 5% 65%  */
+  --modal-text-muted: #71717A;    /* Glimps --modal-text-muted     240 4% 46%  */
+
+  /* --- Radius: Glimps canonical 8px-grid scale (design-system.md sec.4) --- */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;    /* buttons, inputs, small tiles */
+  --radius-lg: 16px;   /* cards, panels */
+  --radius-xl: 32px;   /* reserved */
+  --radius-full: 9999px;
+
+  /* --- Shadows: Glimps scale (design-system.md sec.7) --- */
+  --shadow-sm: 0 1px 2px 0 rgb(2 8 23 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(2 8 23 / 0.08), 0 2px 4px -2px rgb(2 8 23 / 0.06);
+  --shadow-2xl: 0 25px 50px -12px rgb(2 8 23 / 0.25);
+
+  /* --- Type: Glimps scale (design-system.md sec.2.2).
+         --text-hero is the ONE added step: Glimps tops out at 36px Display and
+         has no marketing surface. Raised in round 2 from a 42px ceiling to 52px
+         so the hero carries the page. Everything else is on-scale. --- */
+  --text-hero: clamp(30px, 4.9vw, 52px);
+  --text-display: 36px;
+  --text-h1: 24px;
+  --text-h2: 20px;
+  --text-h3: 16px;
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-sm: 14px;
+  --text-caption: 12px;
+
+  /* --- Layout: Glimps uses max-w-7xl (1280px) for grid surfaces.
+         1120 / 720 are added reading-width variants for prose. --- */
+  --container: 1120px;
+  --container-narrow: 720px;
+  --pad-x: 16px;        /* Glimps px-4  */
+  --pad-x-lg: 32px;     /* Glimps md:px-8 */
+
+  /* --- Motion: Glimps default (design-system.md sec.8) --- */
+  --ease: cubic-bezier(0, 0, 0.2, 1);   /* ease-out */
+  --dur: 200ms;
+
+  /* --- Texture: the one repeating background pattern on the page.
+         Used on the hero and the contact close only. --- */
+  --dots: radial-gradient(circle at 1px 1px, rgb(2 8 23 / 0.055) 1px, transparent 0);
+  --dots-dark: radial-gradient(circle at 1px 1px, rgb(250 250 250 / 0.055) 1px, transparent 0);
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 600;                /* deliberate: no 700 anywhere on this page */
+  letter-spacing: -0.025em;        /* Glimps tracking-tight */
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+p { margin: 0 0 16px; }
+p:last-child { margin-bottom: 0; }
+
+a { color: inherit; }
+
+img { display: block; max-width: 100%; height: auto; }
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT PRIMITIVES
+   -------------------------------------------------------------------------- */
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+
+.wrap-narrow { max-width: var(--container-narrow); }
+
+.section { padding: 112px 0; }
+
+/* Section rhythm: the three tones alternate, so no adjacent pair of sections
+   shares a background. That alternation replaces round 1's hairline dividers,
+   which were what made the page read as a technical document. */
+.pillars    { background: var(--background); border-top: 1px solid var(--border); }
+.background { background: var(--tone-warm); }
+.who        { background: var(--tone-cool); }
+.offer      { background: var(--background); }
+.proof      { background: var(--tone-warm); }
+.contact    { background: var(--modal-bg); }
+
+.section-head { margin-bottom: 56px; max-width: 720px; }
+
+.section h2 {
+  font-size: var(--text-display);
+  margin: 0 0 16px;
+}
+
+.section-sub {
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  color: var(--foreground);
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* Small uppercase label. The only remaining use of a lighter text value on the
+   light surface, and it is a label, not reading text. */
+.eyebrow {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground-secondary);
+  margin: 0 0 16px;
+}
+
+/* Hero variant: the eyebrow becomes a bordered chip so the AI framing has a
+   visual anchor before the headline even starts. */
+.eyebrow-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 14px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 28px;
+}
+
+.chip-glyph {
+  width: 11px;
+  height: 11px;
+  color: var(--accent);
+  flex: none;
+}
+
+/* Glimps .badge-new pattern: rounded-full pill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-full);
+  padding: 3px 12px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--tone-neutral);
+  color: var(--secondary-foreground);
+}
+
+/* Accent-dot variant. Same grammar as .hub-badge on the dark surface: the dot
+   carries the accent, the label stays near-black. Deliberately NOT the
+   accent-on-accent-wash form used in Glimps .badge-new - #3385FF text on a
+   near-white fill is 3.3:1, which fails AA at 12px. The dot is decorative, so
+   it can be accent without owing a contrast ratio. */
+.badge-dot::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  flex: none;
+}
+
+/* --- THE AGENT MARK (added round 4) ---------------------------------------
+   One glyph, defined once as an SVG symbol at the top of index.html and
+   <use>d in four places: the hero animation's prompt rows, the pillar-2 art,
+   the third door illustration and the contact close. It draws entirely in
+   currentColor, so the only thing each surface has to declare is a color.
+
+   This replaced the anonymous 2.5px dot that used to sit in the pillar-2 and
+   contact node pills. Those two surfaces were already using the identical
+   pill vocabulary, so changing one and not the other would have split the
+   node language in half - they move together.                                */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.agent-mark {
+  width: 12px;
+  height: 13px;
+  flex: none;
+  color: var(--line-strong);
+}
+
+.pillar-art svg    { color: var(--line-strong); }
+.door-art svg      { color: var(--line-strong); }
+.contact-motif svg { color: var(--modal-text-muted); }
+
+/* --------------------------------------------------------------------------
+   4. HEADER
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--background) 82%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 64px;
+}
+
+.wordmark {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Glimps header icon-button family (design-system.md sec.10.3):
+   h-9 (36px), rounded-full, 1px border at 20% foreground, transparent bg. */
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgb(2 8 23 / 0.2);
+  border-radius: var(--radius-full);
+  background: transparent;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  white-space: nowrap;
+}
+
+.nav-cta:hover {
+  background: var(--muted);
+  border-color: var(--foreground);
+}
+
+/* --------------------------------------------------------------------------
+   5. HERO
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 128px 0 104px;
+  /* warm tone, fading out downward, over the dot texture */
+  background:
+    var(--dots),
+    linear-gradient(to bottom, var(--tone-warm) 0%, var(--background) 78%);
+  background-size: 24px 24px, auto;
+}
+
+.hero::after {                     /* soft cool bloom behind the motif */
+  content: "";
+  position: absolute;
+  top: -160px;
+  right: -120px;
+  width: 640px;
+  height: 640px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(circle, rgb(51 133 255 / 0.07) 0%, transparent 62%);
+  pointer-events: none;
+}
+
+.hero-inner { position: relative; z-index: 1; }
+
+/* --- HERO PROPORTIONS (round 4) ------------------------------------------
+   Ofir: "I want the text to hold to a third of the page width and the graphic
+   to hold one third. Right now the text occupies too much space."
+
+   Two equal columns inside the 1120px container with a 72px gutter, so at the
+   32px page padding each column is a constant 492px. Against a 1440px
+   viewport that is 34% for the copy and 34% for the graphic, with the
+   remaining third spread across the two outer margins and the gutter. Because
+   the container is capped, that 492px is identical at every width from 1120px
+   up: the columns never drift, exactly like the round-2 motif channel.
+
+   Split at 1120px rather than scaling the columns down: below that the
+   container stops being capped and a two-column hero would squeeze both the
+   headline and the prompt text at the same time. Stacked is better there.
+
+   The credibility strip spans the full width beneath both columns - three
+   inline credentials cannot hold together in 492px.                          */
+@media (min-width: 1120px) {
+  .hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "copy art"
+      "cred cred";
+    column-gap: 72px;
+    align-items: center;
+  }
+
+  .hero-copy { grid-area: copy; }
+  .hero-art  { grid-area: art; }
+  .cred-bar  { grid-area: cred; }
+}
+
+.hero-title {
+  font-size: var(--text-hero);
+  line-height: 1.1;
+  margin: 0 0 28px;
+}
+
+/* Two deliberate lines. Each sentence is its own block, so the two never
+   interleave. Round 1 constrained the whole h1 with max-width:17ch and let
+   the browser break wherever it landed, which is what produced the ragged
+   one-word drop. Breaks are now explicit (see .hero-br); text-wrap:balance
+   is kept only as insurance if the copy is later changed. */
+/* Sentence-per-line headline treatment. Rule established on the h1 in round 2
+   and reused by the Background h2 in round 3: let the browser wrap INSIDE a
+   sentence, never between two. text-wrap:balance is insurance only, it cannot
+   be relied on (Chrome drops it on any line containing an inline element). */
+h1 .line,
+h2 .line {
+  display: block;
+  text-wrap: balance;
+}
+
+.hero-title .line-2 { font-weight: 400; }
+
+.hero-br { display: none; }
+
+/* The AI signal, made visual: a highlight that sits behind the text baseline
+   rather than an inline color change. Keeps the headline black. */
+.ai-mark {
+  font-style: normal;
+  position: relative;
+  white-space: nowrap;
+  background-image: linear-gradient(to bottom, var(--accent-wash), var(--accent-wash));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.42em;
+  box-shadow: inset 0 -2px 0 0 var(--accent);
+  padding: 0 0.06em;
+}
+
+.hero-sub {
+  font-size: var(--text-body-lg);
+  line-height: 1.65;
+  color: var(--foreground);
+  max-width: 58ch;
+  margin: 0 0 40px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Buttons: Glimps default variant, size lg. Radius 8px, NOT a pill.
+   (design-system.md sec.4.2 + 10.2) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.btn-primary:hover { background: rgb(0 0 0 / 0.9); }
+
+/* Outline variant. Same vocabulary as the outlined secondary button already
+   established in the Glimps email templates (session 23): transparent fill,
+   1px black border, black text, 8px radius. */
+.btn-secondary {
+  background: transparent;
+  border-color: var(--foreground);
+  color: var(--foreground);
+}
+
+.btn-secondary:hover {
+  background: var(--foreground);
+  color: var(--primary-foreground);
+}
+
+/* Inverted, for the dark contact surface. */
+.btn-invert {
+  background: var(--modal-text);
+  color: var(--modal-bg);
+}
+
+.btn-invert:hover { background: var(--primary-foreground); }
+
+.btn .arrow { transition: transform var(--dur) var(--ease); }
+.btn:hover .arrow { transform: translateX(2px); }
+
+/* Credibility strip */
+.cred-bar {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 56px;
+  margin: 72px 0 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.cred-bar li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cred-bar strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.cred-bar span {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+/* Third tier: tenure and sector. The only value on this strip that is allowed
+   to drop below --foreground, because it is meta, not a claim. */
+.cred-bar .cred-meta {
+  font-weight: 400;
+  color: var(--foreground-secondary);
+}
+
+/* Stacked modifier, used by the Background section's "also" list. Same
+   component, different axis - no second credential style on the page. */
+.cred-bar-stack {
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   5.5 THE HERO GRAPHIC (added round 4)
+
+   A wireframe surface that rebuilds itself as direction is typed at it, on a
+   continuous loop. Pure CSS keyframes over inline SVG: no JavaScript, no
+   library, no build step.
+
+   ONE MASTER TIMELINE, 14s, three beats. Every keyframe percentage below is
+   read off this table, so retiming the whole thing means editing this comment
+   and the percentages, not reverse engineering them:
+
+      %      s     what happens
+     ----   ----   ---------------------------------------------------------
+      3-6    0.4    prompt row 1 fades up
+      6-12   0.9    its text types on, left to right
+     14-18   2.0    accent hairline sweeps the surface  (the "thinking" beat)
+     19-22   2.7    BEAT 1: heading expands, two nav rows appear
+     28-31   3.9    prompt row 2 fades up
+     31-37   4.3    types on
+     39-43   5.5    sweep
+     44-47   6.2    BEAT 2: tiles duplicate into a second row, heights drop
+     53-56   7.4    prompt row 3 fades up
+     56-62   7.8    types on
+     64-68   9.0    sweep
+     69-72   9.7    BEAT 3: column widths shift, one tile is flagged, pin and
+                    status chip appear
+     72-87  10.1    hold, fully composed
+     87-90  12.2    prompts clear
+     89-96  12.5    surface eases back to base
+     96-100 13.4    at rest, ready to loop
+
+   WHY NOTHING HERE CAN CAUSE LAYOUT SHIFT: the SVG has a fixed viewBox and
+   therefore a fixed intrinsic ratio, so every geometry change happens inside
+   its own coordinate space and never reaches document layout. All three
+   prompt rows are permanently in the flow at full height from first paint and
+   only their opacity changes, so the stack never grows or shrinks.
+
+   PROPERTY CHOICE: geometry is animated with `width` / `height` (SVG geometry
+   presentation attributes are real CSS properties, so the corner radii stay
+   circular instead of being stretched by a scale transform) and repositioning
+   with `transform` (compositor-friendly, and universally supported so a tile
+   can never jump to a wrong place). No element ever has two animations
+   targeting the same property.
+   -------------------------------------------------------------------------- */
+.hero-art { width: 100%; }
+
+.build-screen {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.build-prompts {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+/* Same card family as everything else on the page: white, 1px --border,
+   shadow-sm. 8px radius rather than the pill used by the decorative node
+   chips, because these hold a full sentence and a pill would read as a chat
+   bubble. */
+.build-prompt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--foreground);
+  opacity: 0;
+}
+
+.build-prompt .agent-mark { margin-top: 3px; }
+
+/* The typing reveal. clip-path rather than an animated width, because width
+   needs white-space:nowrap and the prompt has to be allowed to wrap on a
+   phone. steps() is what makes it read as typing rather than as a wipe. */
+.build-prompt span {
+  display: block;
+  clip-path: inset(0 100% 0 0);
+}
+
+/* Parts that are not present in the resting state. Declared here rather than
+   only inside a keyframe so that if animations never run at all - reduced
+   motion, print, an old engine - they are correctly absent instead of
+   flashing in on top of the base composition. */
+.bs-chip,
+.bs-rail-a,
+.bs-rail-b,
+.bs-g3,
+.bs-g4,
+.bs-pin,
+.bs-scan { opacity: 0; }
+
+.bs-pin {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Shared timing. Each element then only declares which keyframes it runs. */
+.bs {
+  animation-duration: 14s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease);
+  animation-fill-mode: none;
+}
+
+/* --- the prompts --- */
+.bp1 { animation-name: bs-p1; }
+.bp2 { animation-name: bs-p2; }
+.bp3 { animation-name: bs-p3; }
+.bt1 { animation-name: bs-t1-type; animation-timing-function: steps(28, end); }
+.bt2 { animation-name: bs-t2-type; animation-timing-function: steps(26, end); }
+.bt3 { animation-name: bs-t3-type; animation-timing-function: steps(26, end); }
+
+@keyframes bs-p1 {
+  0%, 3%    { opacity: 0; transform: translateY(8px); }
+  6%, 87%   { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes bs-p2 {
+  0%, 28%   { opacity: 0; transform: translateY(8px); }
+  31%, 87%  { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes bs-p3 {
+  0%, 53%   { opacity: 0; transform: translateY(8px); }
+  56%, 87%  { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes bs-t1-type {
+  0%, 6%    { clip-path: inset(0 100% 0 0); }
+  12%, 87%  { clip-path: inset(0 0 0 0); }
+  89%, 100% { clip-path: inset(0 100% 0 0); }
+}
+@keyframes bs-t2-type {
+  0%, 31%   { clip-path: inset(0 100% 0 0); }
+  37%, 87%  { clip-path: inset(0 0 0 0); }
+  89%, 100% { clip-path: inset(0 100% 0 0); }
+}
+@keyframes bs-t3-type {
+  0%, 56%   { clip-path: inset(0 100% 0 0); }
+  62%, 87%  { clip-path: inset(0 0 0 0); }
+  89%, 100% { clip-path: inset(0 100% 0 0); }
+}
+
+/* --- the "thinking" sweep, three times per cycle. Linear: an eased sweep
+       reads as a decorative shine, a linear one reads as a scan. --- */
+.bs-scan {
+  animation-name: bs-sweep;
+  animation-timing-function: linear;
+}
+
+@keyframes bs-sweep {
+  0%, 14%       { opacity: 0;   transform: translateY(0); }
+  15%           { opacity: 0.5; transform: translateY(12px); }
+  17%           { opacity: 0.5; transform: translateY(172px); }
+  18%           { opacity: 0;   transform: translateY(196px); }
+  18.01%, 39%   { opacity: 0;   transform: translateY(0); }
+  40%           { opacity: 0.5; transform: translateY(12px); }
+  42%           { opacity: 0.5; transform: translateY(172px); }
+  43%           { opacity: 0;   transform: translateY(196px); }
+  43.01%, 64%   { opacity: 0;   transform: translateY(0); }
+  65%           { opacity: 0.5; transform: translateY(12px); }
+  67%           { opacity: 0.5; transform: translateY(172px); }
+  68%           { opacity: 0;   transform: translateY(196px); }
+  68.01%, 100%  { opacity: 0;   transform: translateY(0); }
+}
+
+/* --- BEAT 1: hierarchy. Heading and its sub expand, two nav rows appear. --- */
+.bs-title  { animation-name: bs-title-w; }
+.bs-sub    { animation-name: bs-sub-w; }
+.bs-rail-a,
+.bs-rail-b { animation-name: bs-rail-in; }
+.bs-rail-b { animation-delay: 0.12s; }
+
+@keyframes bs-title-w {
+  0%, 19%   { width: 120px; }
+  22%, 89%  { width: 208px; }
+  96%, 100% { width: 120px; }
+}
+@keyframes bs-sub-w {
+  0%, 19%   { width: 76px; }
+  22%, 89%  { width: 132px; }
+  96%, 100% { width: 76px; }
+}
+@keyframes bs-rail-in {
+  0%, 19%   { opacity: 0; transform: translateX(-10px); }
+  22%, 89%  { opacity: 1; transform: translateX(0); }
+  96%, 100% { opacity: 0; transform: translateX(-10px); }
+}
+
+/* --- BEAT 2: the tiles duplicate into a second row and lose 8px of height.
+       Row two is a real duplicate of row one, 12px below it - the same 12px
+       that already separates the two columns. --- */
+.bs-g3 { animation-name: bs-row-in; }
+
+@keyframes bs-squat {
+  0%, 44%   { height: 60px; }
+  47%, 89%  { height: 52px; }
+  96%, 100% { height: 60px; }
+}
+@keyframes bs-row-in {
+  0%, 44%   { opacity: 0; }
+  47%, 89%  { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+/* --- BEAT 3: the widths shift. The left column grows 140 -> 176 and the
+       right column narrows 140 -> 104 and slides 36px right, so the outer
+       edges and the 12px gutter are preserved exactly and nothing can drift
+       out of the frame. The right-hand tile of row two is then flagged with
+       the same accent stroke and review pin the pillar-1 art already uses. --- */
+/* One rule per element, listing everything it runs, so no element's animation
+   list is assembled by cascade order. No two names in any single list target
+   the same property. */
+.bs-t1   { animation-name: bs-squat, bs-grow; }   /* height + width           */
+.bs-t2   { animation-name: bs-squat, bs-slim; }   /* height + width           */
+.bs-t3   { animation-name: bs-grow; }             /* width                    */
+.bs-t4   { animation-name: bs-slim, bs-flag; }    /* width + stroke/fill      */
+.bs-g2   { animation-name: bs-shift; }            /* transform                */
+.bs-g4   { animation-name: bs-row-in, bs-shift; } /* opacity + transform      */
+.bs-pin  { animation-name: bs-pop; }
+.bs-chip { animation-name: bs-fade-late; }
+
+@keyframes bs-shift {
+  0%, 69%   { transform: translateX(0); }
+  72%, 89%  { transform: translateX(36px); }
+  96%, 100% { transform: translateX(0); }
+}
+@keyframes bs-grow {
+  0%, 69%   { width: 140px; }
+  72%, 89%  { width: 176px; }
+  96%, 100% { width: 140px; }
+}
+@keyframes bs-slim {
+  0%, 69%   { width: 140px; }
+  72%, 89%  { width: 104px; }
+  96%, 100% { width: 140px; }
+}
+@keyframes bs-flag {
+  0%, 69%   { stroke: var(--line);   stroke-width: 1;   fill: transparent; }
+  72%, 89%  { stroke: var(--accent); stroke-width: 1.5; fill: var(--accent-wash); }
+  96%, 100% { stroke: var(--line);   stroke-width: 1;   fill: transparent; }
+}
+@keyframes bs-pop {
+  0%, 69%   { opacity: 0; transform: scale(0.5); }
+  72%, 89%  { opacity: 1; transform: scale(1); }
+  95%, 100% { opacity: 0; transform: scale(0.5); }
+}
+@keyframes bs-fade-late {
+  0%, 69%   { opacity: 0; }
+  72%, 89%  { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+/* --- THE STILL. Reduced motion and print both get the fully composed final
+       state rather than the empty base state: the point of the graphic is
+       what the surface became, so freezing it at "before" would show the
+       least useful frame. Setting animation-name to none is what disables it
+       - the global reduced-motion block further down only forces
+       animation-duration, which a running infinite loop would still honour. */
+@media print, (prefers-reduced-motion: reduce) {
+  .bs { animation: none; }
+
+  .bs-title { width: 208px; }
+  .bs-sub   { width: 132px; }
+  .bs-t1, .bs-t2 { height: 52px; }
+  .bs-t1, .bs-t3 { width: 176px; }
+  .bs-t2, .bs-t4 { width: 104px; }
+  .bs-t4 { stroke: var(--accent); stroke-width: 1.5; fill: var(--accent-wash); }
+
+  .bs-chip,
+  .bs-rail-a,
+  .bs-rail-b,
+  .bs-g3,
+  .bs-g4,
+  .bs-pin,
+  .build-prompt { opacity: 1; }
+
+  .bs-rail-a, .bs-rail-b, .build-prompt { transform: none; }
+  .bs-g2, .bs-g4 { transform: translateX(36px); }
+  .bs-pin { transform: scale(1); }
+  .bs-scan { display: none; }
+  .build-prompt span { clip-path: none; }
+}
+
+/* --------------------------------------------------------------------------
+   6. PILLARS - each anchored by an illustration, not by rules and body copy
+   -------------------------------------------------------------------------- */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.pillar { display: flex; flex-direction: column; }
+
+/* The art panel. Tone 2 on the first pillar, tone 3 on the second, so the
+   two subtle colors are introduced here and then recur down the page. */
+.pillar-art {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.art-cool { background: var(--tone-cool); }
+.art-warm { background: var(--tone-warm); }
+
+.pillar-art svg {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+.pillar h3 {
+  font-size: var(--text-h2);
+  margin: 0 0 12px;
+  padding-top: 16px;
+  border-top: 2px solid var(--foreground);
+}
+
+.pillar p {
+  font-size: var(--text-body);
+  color: var(--foreground);
+  margin: 0;
+}
+
+/* Pull-note. A card, not a tinted band: on --background a --tone-neutral fill
+   is only a 2% step and the block all but disappeared. White + border + the
+   2px foreground rule makes it a real object and reuses the card family. */
+.note {
+  margin-top: 48px;
+  padding: 24px 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--foreground);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-body-lg);
+  color: var(--foreground);
+}
+
+/* --------------------------------------------------------------------------
+   6.5 BACKGROUND (added round 3, cut back round 4)
+   The judgment half of the offer. Two parts: a career timeline (the
+   substance) and the portfolio it produced.
+
+   ZERO new visual vocabulary. It reuses, in order:
+     the spine + dot   from the agent diagram / mobile sprint rail
+     the card family   (white, 1px --border, 16px radius)
+     .badge            with the .hub-badge accent-dot treatment
+     .btn-secondary    the outline button
+     .cred-bar         stacked instead of inline
+
+   ROUND 4, (a) DENSITY. Ofir: "It's a bit too crowded compared to the rest of
+   the sections. I want it to be more minimalistic."
+     - The three-stat row is gone. It restated the h2 directly above it word
+       for word ("Twelve years... Five of them inside cybersecurity"), and a
+       second row of 36px numerals made this section rhyme with Proof, which
+       flattened the one place those numerals actually have to land.
+     - The section-sub is gone: it restated the timeline immediately below it.
+     - The second Axonius title row is gone; the promotion is now a clause in
+       the role body, so every entry has exactly one title line.
+     - One credential line is gone (see the .cred-bar-stack note in the HTML).
+
+   ROUND 4, (b) RELATIONSHIP. Ofir: "It's not that explainable or clear that
+   the left side is my path and the right side is the expansion and the focus
+   of my portfolio." Fixed by naming both halves rather than by separating
+   them: one eyebrow per column ("Where I've done it" / "What came out of
+   it"), plus a hairline in the gutter that binds them into a single object.
+   Naming was the right lever because the two genuinely are one statement;
+   splitting them into two sections would have made the page longer to say
+   less.
+
+   ON THE PORTFOLIO BEING A LINK, NOT A SCREENSHOT: ofirux.com is a dark
+   full-bleed photographic hero on a yellow accent. Framed next to the Glimps
+   capture it would put a second browser window and a third accent color on
+   the page, and it would pull attention off the one screenshot that has to
+   land. The link does the job; the visual would cost more than it returns.
+   -------------------------------------------------------------------------- */
+.bg-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+
+/* The hairline that makes the two columns one object. It sits in the gutter
+   (half of the 64px gap), not on the column edge, so it reads as a division
+   of one block rather than as the border of the right-hand one. */
+.bg-aside {
+  border-left: 1px solid var(--border);
+  padding-left: 32px;
+  margin-left: -32px;
+}
+
+.bg-col > .eyebrow { margin-bottom: 20px; }
+
+/* --- the timeline --- */
+.timeline {
+  list-style: none;
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 36px;
+}
+
+/* The spine. Starts at the centre of the Axonius accent dot (38px, derived
+   below) so the line reads as emerging from the current role, and fades out
+   at the base so it runs back in time rather than stopping at an arbitrary
+   point. Same grammar as the agent diagram's rail. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 38px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    var(--line) 0%, var(--line) 78%, transparent 100%);
+}
+
+.role {
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.role:last-child { margin-bottom: 0; }
+
+/* Dot on the spine. 7px, the same size the agent-diagram nodes use.
+   left: -33.5px = spine at 6px, minus half the dot, minus the 36px padding.
+   Vertical centre is derived, not eyeballed: the company name is 16px at
+   line-height 1.2 (19.2px box), so its optical centre is 9.6px down and the
+   7px dot starts at 6px. */
+.role::before {
+  content: "";
+  position: absolute;
+  left: -33.5px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+}
+
+/* Axonius: the only entry given a panel and the only accent dot. This is
+   where the cybersecurity leadership sits, so it gets the weight.
+
+   Round 4, Ofir: "the weight jump is abrupt rather than deliberate." The
+   shadow was the abrupt part - it lifted this entry onto a different plane
+   from three entries that are plain text. Dropping it turns a floating card
+   into a panel: still unmistakably the emphasised entry (fill, border, 20px
+   name, badge, accent dot) but sitting in the same plane as the rest.
+   Padding came down 26/28 -> 22/24 in the same pass. */
+.role-lead {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+}
+
+/* Panel: 22px padding, then half of the 25.2px .role-head row (the badge is
+   taller than the 20px h3 and sets that row's height), minus half the dot. */
+.role-lead::before {
+  background: var(--accent);
+  top: 31px;
+}
+
+.role-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 12px;
+}
+
+.role h3 {
+  font-size: var(--text-h3);
+  margin: 0 0 6px;
+}
+
+.role-lead h3 {
+  font-size: var(--text-h2);
+  margin: 0;
+}
+
+.role-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0 0 4px;
+}
+
+.role-dates {
+  font-size: var(--text-caption);
+  font-weight: 400;
+  color: var(--foreground-secondary);
+  white-space: nowrap;
+}
+
+.role-body {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--foreground);
+  margin: 8px 0 0;
+}
+
+.role-lead .role-body {
+  font-size: var(--text-body);
+  margin-top: 14px;
+}
+
+/* --- aside: portfolio + the record that isn't a job ---
+   Round 4: the portfolio block used to carry its own eyebrow ("Portfolio")
+   and a 2px --foreground top rule. With the column eyebrow above it, the
+   eyebrow was a duplicate label and the rule was a second "this is
+   significant" marker inside a column that already has one. Both removed;
+   the column hairline now does the structural job. */
+.portfolio h3 {
+  font-size: var(--text-h2);
+  margin: 0 0 12px;
+}
+
+.portfolio p {
+  font-size: var(--text-body);
+  color: var(--foreground);
+  margin: 0 0 24px;
+}
+
+/* --------------------------------------------------------------------------
+   7. DOORS - Glimps card pattern: white, 16px radius, shadow-sm -> md on hover
+   -------------------------------------------------------------------------- */
+.door-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.door {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.door:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--line);
+}
+
+.door .badge { align-self: flex-start; }
+
+/* The illustration sits on the card itself, not on a tinted panel like
+   .pillar-art. The doors are already white cards on --tone-cool, so a second
+   fill inside them would make three cards read as six boxes. */
+.door-art { margin-bottom: 24px; }
+
+.door-art svg {
+  display: block;
+  width: 128px;
+  height: auto;
+}
+
+/* The door titles are the visitor's own words, so they are set as quotes:
+   slightly larger, and hung on the left edge. */
+.door h3 {
+  font-size: var(--text-h2);
+  line-height: 1.35;
+  margin: 20px 0 14px;
+  text-wrap: balance;
+}
+
+.door p {
+  font-size: var(--text-body);
+  color: var(--foreground);
+}
+
+.door-entry {
+  width: 100%;
+  margin: auto 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  color: var(--foreground-secondary);
+}
+
+.door-entry strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   8. STAGES - an explicit left-to-right sequence, not three parallel options.
+   A 1px rail runs behind the row at the numbered badges' centre line; the
+   cards cover it, so it reads only in the gaps. Chevrons sit on the rail
+   between cards. Below 900px the rail turns vertical and the chevrons point
+   down, so the sequence survives the collapse to one column.
+   -------------------------------------------------------------------------- */
+.stage-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin: 0;
+  padding: 20px 0 0;
+  position: relative;
+}
+
+/* Inset by the card radius: at the badge centre line the cards' rounded
+   corners have not started painting yet, so a full-width rail would poke out
+   past the first and last card. 16px = --radius-lg. */
+.stage-grid::before {              /* the rail */
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: var(--line);
+  z-index: 0;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 28px 32px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.stage:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--line);
+}
+
+/* The badge straddles the card's top edge, sitting on the rail. */
+.stage-num {
+  position: absolute;
+  top: -16px;
+  left: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--card);
+  border: 1px solid var(--foreground);
+  border-radius: var(--radius-full);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+}
+
+/* Chevron in the gap, on the rail. */
+.stage:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -21px;
+  width: 9px;
+  height: 9px;
+  border-top: 1.5px solid var(--line-strong);
+  border-right: 1.5px solid var(--line-strong);
+  transform: rotate(45deg);
+}
+
+.stage h3 {
+  font-size: var(--text-h2);
+  margin: 0 0 6px;
+}
+
+.stage-tag {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--foreground-secondary);
+  margin: 0 0 16px;
+}
+
+.stage-body {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--foreground);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   9. PROOF: live screenshot, stats, then the agent diagram
+   -------------------------------------------------------------------------- */
+
+/* --- browser frame --- */
+.browser {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  overflow: hidden;
+}
+
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--tone-neutral);
+  border-bottom: 1px solid var(--border);
+}
+
+.browser-dots {
+  display: inline-flex;
+  gap: 7px;
+  flex: none;
+}
+
+.browser-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--line);
+}
+
+.browser-url {
+  flex: 1;
+  max-width: 260px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-caption);
+  color: var(--foreground-secondary);
+}
+
+/* The source capture is 1440x900. It is shown at 1440x845 (cover, anchored
+   top): rows 825-845 of the source are pure page background, so the crop lands
+   in clear space just below the first full row of company cards rather than
+   slicing a card or the floating feedback widget in half. Ratio is fixed, so
+   the crop is identical at every viewport width. */
+.browser-shot {
+  position: relative;
+  background: var(--background);
+}
+
+.browser-shot img {
+  width: 100%;
+  aspect-ratio: 1440 / 845;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* --- stats + live link --- */
+.proof-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin: 32px 0 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 56px;
+  margin: 0;
+}
+
+.stat dt {
+  order: 2;
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--foreground-secondary);
+}
+
+.stat dd {
+  order: 1;
+  margin: 0 0 2px;
+  font-size: var(--text-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+
+.stat { display: flex; flex-direction: column; }
+
+.proof-lead {
+  font-size: var(--text-body-lg);
+  line-height: 1.65;
+  color: var(--foreground);
+  max-width: 62ch;
+  margin: 0 0 40px;
+}
+
+/* --- the panel ---
+   Dark Overlay Surface pattern, reused from Glimps SearchModal
+   (design-system.md sec.3): --modal-* tokens, radius-lg, shadow-2xl. */
+.agent-map {
+  margin: 0 0 40px;
+  padding: 48px 40px 52px;
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  color: var(--modal-text);
+}
+
+.map-caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 44px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--modal-border);
+}
+
+.map-caption h3 {
+  font-size: var(--text-h3);
+  font-weight: 500;
+  color: var(--modal-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.map-caption span {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--modal-text-secondary);
+  white-space: nowrap;
+}
+
+/* --- the grid: 2 nodes left, 2 right, 1 below, hub in the middle --- */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    "n1 hub n4"
+    "n2 hub n5"
+    "n3 n3  n3";
+  column-gap: 64px;
+  row-gap: 28px;
+  align-items: stretch;
+}
+
+.n1 { grid-area: n1; }
+.n2 { grid-area: n2; }
+.n3 { grid-area: n3; }
+.n4 { grid-area: n4; }
+.n5 { grid-area: n5; }
+
+/* --- hub --- */
+/* Vertical rail: occupies the same grid area as the hub and runs the full
+   height of rows 1-2 plus the row gap, so it reaches the bottom node exactly.
+   The hub card sits centred on top of it. Fades out at the top so the spine
+   reads as emerging from the hub rather than running off the diagram. */
+.map-rail {
+  grid-area: hub;
+  justify-self: center;
+  align-self: stretch;
+  position: relative;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent 0%, var(--modal-border) 34%, var(--modal-border) 100%);
+}
+
+.map-rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--modal-border), var(--accent));
+}
+
+.map-hub {
+  grid-area: hub;
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  background: var(--modal-surface);
+  border: 1px solid var(--modal-border);
+  border-radius: var(--radius-lg);
+}
+
+.hub-label {
+  display: block;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--modal-text-secondary);
+}
+
+.hub-name {
+  display: block;
+  font-size: var(--text-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 10px 0 6px;
+}
+
+.hub-meta {
+  display: block;
+  font-size: var(--text-caption);
+  color: var(--modal-text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Glimps .badge-new reused on dark chrome: accent at 12%, accent text, pill */
+.hub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  background: rgb(51 133 255 / 0.12);
+  color: var(--accent);
+  font-size: var(--text-caption);
+  font-weight: 500;
+}
+
+.hub-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+}
+
+/* --- nodes --- */
+.node {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--modal-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.node:hover {
+  background: var(--modal-surface);
+  border-color: var(--modal-surface-hover);
+}
+
+.node-role {
+  display: block;
+  font-size: var(--text-h3);
+  font-weight: 600;
+  color: var(--modal-text);
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.node dl { margin: 0; }
+
+/* Round 2 contrast pass on the dark surface too: these labels were on
+   --modal-text-muted (#71717A, 4.0:1 on --modal-bg). Moved up one step. */
+.node dt {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--modal-text-secondary);
+  margin-bottom: 4px;
+}
+
+.node dd {
+  margin: 0 0 14px;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--modal-text-secondary);
+}
+
+.node dd:last-child { margin-bottom: 0; }
+
+.node .shipped {
+  padding-top: 14px;
+  border-top: 1px solid var(--modal-border);
+}
+
+.node .shipped + dd { color: var(--modal-text); }
+
+/* --- spokes: node -> hub. Dot sits on the node edge, line fades toward hub. --- */
+.node::before,
+.node::after { content: ""; position: absolute; }
+
+.node::before {                       /* connector dot */
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  top: 50%;
+  margin-top: -3.5px;
+}
+
+/* Spoke length = the 64px gutter plus half the centre column. All three columns
+   are equal 1fr, so 50% of a node's own width is half the centre column, and the
+   line lands exactly on the rail. */
+.node::after {                        /* connector line */
+  height: 1px;
+  width: calc(50% + 64px);
+  top: 50%;
+}
+
+.n1::before, .n2::before { left: 100%; margin-left: -3.5px; }
+.n1::after,  .n2::after  { left: 100%; background: linear-gradient(to right, var(--accent), var(--modal-border)); }
+
+.n4::before, .n5::before { right: 100%; margin-right: -3.5px; }
+.n4::after,  .n5::after  { right: 100%; background: linear-gradient(to left, var(--accent), var(--modal-border)); }
+
+/* Bottom node spans the full base of the diagram: the content pipeline that
+   feeds the product. Horizontal internal layout, dot on the top edge. */
+.n3 {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  column-gap: 40px;
+  align-items: center;
+  padding: 24px 22px;
+}
+
+.n3 .node-role { margin-bottom: 0; }
+
+.n3 dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  grid-auto-flow: column;
+  column-gap: 40px;
+}
+
+.n3 dd { margin-bottom: 0; }
+
+.n3 .shipped {
+  padding-top: 0;
+  border-top: none;
+}
+
+.n3::before {                         /* dot on top edge */
+  left: 50%;
+  margin-left: -3.5px;
+  top: -3.5px;
+  margin-top: 0;
+}
+
+.n3::after { display: none; }
+
+.map-foot {
+  margin: 44px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--modal-border);
+  font-size: var(--text-sm);
+  color: var(--modal-text-secondary);
+}
+
+.map-foot span {
+  display: block;
+  max-width: 76ch;
+}
+
+.proof-close {
+  font-size: var(--text-body);
+  color: var(--foreground);
+  max-width: 72ch;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   10. CONTACT - full-bleed dark close on the Dark Overlay Surface family
+   -------------------------------------------------------------------------- */
+.contact {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  color: var(--modal-text);
+  background-image: var(--dots-dark);
+  background-size: 24px 24px;
+  background-color: var(--modal-bg);
+}
+
+/* A soft accent bloom above the invitation, the only chromatic light on the
+   dark close. */
+.contact::before {
+  content: "";
+  position: absolute;
+  top: -360px;
+  left: 50%;
+  width: 1200px;
+  height: 800px;
+  margin-left: -600px;
+  background: radial-gradient(ellipse at center,
+    rgb(51 133 255 / 0.14) 0%,
+    rgb(51 133 255 / 0.06) 42%,
+    transparent 72%);
+  pointer-events: none;
+}
+
+.contact-motif {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.motif-side {
+  position: absolute;
+  top: 50%;
+  width: 200px;
+  height: 260px;
+  margin-top: -130px;
+  opacity: 0.85;
+}
+
+.motif-l { left: 5%; }
+.motif-r { right: 5%; transform: scaleX(-1); }
+
+.contact-inner { position: relative; z-index: 1; }
+
+.contact .eyebrow { color: var(--modal-text-secondary); }
+
+.contact h2 {
+  font-size: var(--text-display);
+  color: var(--modal-text);
+  margin-bottom: 20px;
+}
+
+.contact-body {
+  font-size: var(--text-body-lg);
+  line-height: 1.65;
+  color: var(--modal-text);
+  max-width: 56ch;
+  margin: 0 auto 40px;
+}
+
+.contact .btn { padding: 0 40px; }
+
+.contact-meta {
+  margin: 24px 0 0;
+  font-size: var(--text-sm);
+  color: var(--modal-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   11. FOOTER - continues the dark close, no seam
+   -------------------------------------------------------------------------- */
+.site-footer {
+  padding: 32px 0;
+  background: var(--modal-bg);
+  border-top: 1px solid var(--modal-border);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.site-footer p {
+  font-size: var(--text-caption);
+  color: var(--modal-text-secondary);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   12. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (min-width: 721px) {
+  .wrap { padding: 0 var(--pad-x-lg); }
+}
+
+/* Below 1120px the container stops being capped, the headline grows relative
+   to it, and the clear channel beside it closes. Both flanking motifs need
+   real margin, so below this they go rather than shrink into the copy. */
+@media (max-width: 1120px) {
+  .hero-motif { display: none; }
+  .contact-motif { display: none; }
+  .hero::after { opacity: 0.7; }
+}
+
+/* Diagram: below 960px the hub-and-spoke becomes a vertical spine.
+   Still a diagram, not a card list. */
+@media (max-width: 959px) {
+  .agent-map { padding: 32px 24px 36px; }
+
+  .map-grid {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "hub"
+      "n1"
+      "n2"
+      "n3"
+      "n4"
+      "n5";
+    column-gap: 0;
+    row-gap: 20px;
+    padding-left: 28px;
+  }
+
+  /* the centre rail is replaced by the left-hand spine below */
+  .map-rail { display: none; }
+
+  /* the spine */
+  .map-grid::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 24px;
+    bottom: 24px;
+    width: 1px;
+    background: linear-gradient(to bottom,
+      transparent 0%, var(--modal-border) 6%, var(--modal-border) 94%, transparent 100%);
+  }
+
+  .map-hub {
+    align-items: flex-start;
+    text-align: left;
+    padding: 24px;
+  }
+
+  .map-hub::after { content: none; }
+
+  /* dot centred on the spine: node edge sits 28px right of the grid box,
+     the spine sits 7px in, so the dot's centre needs to land at -21px. */
+  .map-hub::before,
+  .node::before {
+    content: "";
+    position: absolute;
+    left: -24.5px;
+    margin-left: 0;
+    right: auto;
+    margin-right: 0;
+    top: 32px;
+    margin-top: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background: var(--accent);
+  }
+
+  .map-hub::before { top: 28px; }
+
+  .node::after,
+  .n1::after, .n2::after, .n4::after, .n5::after {
+    display: block;
+    left: -21px;
+    right: auto;
+    top: 35px;
+    width: 21px;
+    height: 1px;
+    background: linear-gradient(to left, var(--accent), var(--modal-border));
+  }
+
+  /* bottom node reverts to the same stacked layout as every other node */
+  .n3 {
+    display: block;
+    padding: 20px 22px;
+  }
+
+  .n3 .node-role { margin-bottom: 16px; }
+  .n3 dl { display: block; }
+  .n3 dd { margin-bottom: 14px; }
+  .n3 dd:last-child { margin-bottom: 0; }
+
+  .n3 .shipped {
+    padding-top: 14px;
+    border-top: 1px solid var(--modal-border);
+  }
+
+  .n3::before { top: 32px; }
+}
+
+/* Background stat row. The three labels total ~603px at 12px, so with the
+   .stats 56px column gap they stop fitting on one line below ~900px and wrap
+   2 + 1, which reads as unresolved rather than deliberate. In this band they
+   become an explicit 3-column grid instead: the labels wrap to two lines but
+   stay aligned. Below 680px the flex stack takes over, which is correct. */
+@media (min-width: 680px) and (max-width: 900px) {
+  .stats.bg-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+/* Doors: 3 -> 2 -> 1 columns. */
+@media (max-width: 1040px) {
+  .door-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .door-grid .door:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .pillar-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .pillar-art { padding: 28px; }
+
+  /* Background: timeline first, then the aside. The timeline is the substance,
+     so it keeps the top of the section when the columns stack. */
+  .bg-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+
+  /* Sprint collapses to one column but stays a sequence: the rail turns
+     vertical, the chevrons point down. */
+  .stage-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding-top: 20px;
+  }
+
+  .stage-grid::before { display: none; }
+
+  /* The rail turns vertical and runs the full 40px gap, from each card's base
+     into the top of the next numbered badge (the badge's opaque fill stops
+     it cleanly). It sits on the badge centre line: the badge is 32px wide at
+     left:26px, so its centre is 42px.
+
+     The desktop chevron is dropped here rather than squeezed in: the badge
+     already occupies the lower 16px of the gap, so an arrowhead would collide
+     with it. A continuous spine with 01/02/03 sitting on it reads as a
+     sequence on its own, and it is the same grammar the agent diagram
+     already uses when it collapses to one column. */
+  .stage:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 42px;
+    top: 100%;
+    width: 1px;
+    height: 40px;
+    background: var(--line);
+  }
+
+  .stage:not(:last-child)::after { display: none; }
+}
+
+/* Below this the headline no longer fits on two lines, so the measured
+   breaks come in. Threshold set from the rendered width of the longer
+   sentence (16.5em) against the container at this width, with headroom for
+   the fallback typeface if Inter fails to load. */
+@media (max-width: 620px) {
+  .hero-br { display: block; }
+}
+
+/* Absolute-smallest-phone safety valve (320-360px). */
+@media (max-width: 360px) {
+  .hero-title { font-size: 28px; }
+}
+
+@media (max-width: 720px) {
+  .section { padding: 72px 0; }
+  .section-head { margin-bottom: 40px; }
+  .section h2 { font-size: var(--text-h1); }
+
+  .hero { padding: 80px 0 64px; }
+  .hero-title { line-height: 1.14; }
+  .cred-bar:not(.cred-bar-stack) { margin-top: 48px; gap: 16px 32px; }
+
+  .door-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .door-grid .door:last-child { grid-column: auto; }
+
+  .door { padding: 24px; }
+  .door h3 { font-size: var(--text-h3); }
+  .stage { padding: 36px 24px 28px; }
+
+  .stats.bg-stats { padding-bottom: 32px; margin-bottom: 40px; }
+  .timeline { padding-left: 28px; }
+  .timeline::before { left: 5px; top: 34px; }
+  .role::before { left: -26.5px; }
+  .role { margin-bottom: 28px; }
+  .role-lead { padding: 22px 20px; }
+  .role-lead h3 { font-size: var(--text-h3); }
+  /* 22px padding + half the 25.2px badge-height role-head row, minus half the dot */
+  .role-lead::before { top: 31px; }
+  .role-lead .role-body { font-size: var(--text-sm); }
+  /* "Director of Product Design" plus its dates no longer fit on one line at
+     phone widths, so both Axonius titles stack their dates rather than only
+     the longer one wrapping. Deterministic instead of flex-wrap roulette. */
+  .role-lead .role-title { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .portfolio h3 { font-size: var(--text-h3); }
+  .portfolio p { font-size: var(--text-sm); }
+  .portfolio .btn { width: 100%; }
+
+  .note { padding: 20px 22px; font-size: var(--text-body); }
+
+  .browser-bar { height: 38px; gap: 12px; padding: 0 12px; }
+  .browser-dots i { width: 8px; height: 8px; }
+  .browser-url { height: 22px; }
+
+  .proof-stats { gap: 28px; margin: 28px 0 44px; padding-bottom: 32px; }
+  .stats { gap: 20px 40px; }
+  .stat dd { font-size: var(--text-h1); }
+  .proof-stats .btn { width: 100%; }
+  .proof-lead { font-size: var(--text-body); }
+
+  .agent-map { padding: 24px 16px 28px; }
+
+  .map-caption {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .contact h2 { font-size: var(--text-h1); }
+  .contact-body { font-size: var(--text-body); }
+  .contact .btn { width: 100%; padding: 0 16px; }
+
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .site-header { position: static; }
+  .agent-map, .browser { box-shadow: none; }
+  .hero-motif, .contact-motif { display: none; }
+}

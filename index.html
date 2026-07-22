@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ofir Rushinek - AI Product Acceleration</title>
+<meta name="description" content="A product design leader with twelve years of experience, five of them inside cybersecurity. Senior product and UX judgment, executed at AI speed. Assess, shape, and build your product forward in weeks, not months.">
+<meta name="theme-color" content="#F8FAFC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Inter: the Glimps design system typeface (design-system.md, sec. 2.1) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ==========================================================================
+     SPRITE - the one agent mark, defined once and referenced everywhere.
+     Round 4: Ofir asked for the surrounding nodes on the "AI-accelerated
+     execution" art to read as agents rather than floating labels. Rather than
+     drawing a different glyph per place, one mark is defined here and <use>d
+     by the hero animation's prompt rows, the pillar-2 art, the third door
+     illustration and the contact close. Deliberately geometric: a rounded
+     head with a centred bar and a single antenna dot. No eyes, no mascot.
+     It inherits currentColor, so each surface sets its own value in CSS.
+     ========================================================================== -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+  <g id="agent-mark">
+    <circle cx="6" cy="1.2" r="1.2" fill="currentColor"/>
+    <path d="M6 2.6v1.9" stroke="currentColor"/>
+    <rect x="0.5" y="4.5" width="11" height="8" rx="2.5" stroke="currentColor"/>
+    <rect x="3.5" y="7.6" width="5" height="1.8" rx="0.9" fill="currentColor"/>
+  </g>
+</defs></svg>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <span class="wordmark">Ofir Rushinek</span>
+    <a class="nav-cta" href="#contact">Get in touch</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ==========================================================================
+     HERO
+     H1 LOCKED (Ofir, round 3):
+       I'm an AI-native product designer.
+       I move at a pace teams don't expect.
+     The AI fragment stays wrapped in <em class="ai-mark"> - that highlight is
+     how the AI signal is made visual without breaking the black-text rule.
+     ========================================================================== -->
+<section class="hero">
+  <div class="wrap hero-inner">
+
+    <div class="hero-copy">
+      <p class="eyebrow eyebrow-chip">
+        <svg class="chip-glyph" viewBox="0 0 12 12" aria-hidden="true" fill="none">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Product &amp; UX, at AI speed
+      </p>
+
+      <!-- The <br class="hero-br"> elements are load-bearing, not decoration.
+           Each sentence is one line down to 620px; below that each breaks at a
+           measured, deliberate point instead of wherever the browser decides.
+           (Chrome's text-wrap:balance silently gives up on any line containing
+           an inline element, which is what produced the ragged one-word drop.)
+           Round 4: they also come back at 1120px and up, where the copy column
+           is a constant 492px. Measured at 52px Inter with -0.025em tracking:
+           the longest of the four fragments, "teams don't expect.", is 7.701em
+           = 400px, so all four lines clear a 492px column with 92px to spare
+           even before the 6% fallback-typeface allowance.
+           If the headline copy changes, re-place these two breaks. -->
+      <h1 class="hero-title">
+        <span class="line">I'm an <em class="ai-mark">AI-native</em><br class="hero-br"> product designer.</span>
+        <span class="line line-2">I move at a pace<br class="hero-br"> teams don't expect.</span>
+      </h1>
+
+      <p class="hero-sub">Twelve years of product and UX judgment, five of them leading product design inside cybersecurity. What's different now is speed: decisions become flows, specs, and working prototypes in days instead of months.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">Start a conversation <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+
+    <!-- ----------------------------------------------------------------------
+         THE HERO GRAPHIC (round 4). A product surface that rebuilds itself as
+         direction is typed at it, on a continuous 14s loop.
+
+         Sequence, three times per cycle: a prompt row fades in, its text types
+         on left to right, an accent hairline sweeps the surface, then the
+         surface visibly responds. Beat 1 expands the title and adds navigation
+         rows; beat 2 duplicates the tiles into a second row and drops their
+         height; beat 3 shifts the column widths, flags one tile and adds a
+         review pin. Then the prompts clear and the surface eases back to base.
+
+         Pure CSS keyframes on inline SVG. No JavaScript, no library, no build
+         step. Nothing that animates affects document layout: the SVG has a
+         fixed intrinsic ratio and all three prompt rows are always in the flow
+         at full height, only their opacity changes. So the loop cannot cause
+         layout shift at any point.
+
+         Reduced motion and print both get a static, fully composed final
+         state - see the shared block at the end of styles.css section 5.
+
+         The wireframe elements carry .bs (shared timing) plus one class per
+         animated part, so the timeline is readable in one place in the CSS.
+         --------------------------------------------------------------------- -->
+    <div class="hero-art" role="img"
+         aria-label="An animated wireframe of a product screen that rebuilds itself as short lines of product direction are typed at it: the heading grows, the tiles duplicate into a grid, the column widths shift, and one card is flagged for review.">
+
+      <svg class="build-screen" viewBox="0 0 440 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="build-clip"><rect x="0" y="0" width="440" height="250" rx="14"/></clipPath>
+        </defs>
+
+        <rect x="0.5" y="0.5" width="439" height="249" rx="14" fill="var(--card)" stroke="var(--line-strong)"/>
+
+        <!-- chrome -->
+        <path d="M0 40h440" stroke="var(--line)"/>
+        <circle cx="22" cy="20" r="3" fill="var(--line-strong)"/>
+        <circle cx="34" cy="20" r="3" fill="var(--line)"/>
+        <circle cx="46" cy="20" r="3" fill="var(--line)"/>
+        <rect class="bs bs-chip" x="352" y="13" width="66" height="14" rx="7" fill="var(--tone-neutral)"/>
+
+        <!-- navigation rail: two rows at rest, four after beat 1 -->
+        <path d="M104 40v210" stroke="var(--line)"/>
+        <rect x="24" y="58" width="52" height="7" rx="3.5" fill="var(--line-strong)"/>
+        <rect x="24" y="76" width="38" height="7" rx="3.5" fill="var(--line)"/>
+        <rect class="bs bs-rail-a" x="24" y="94" width="46" height="7" rx="3.5" fill="var(--line)"/>
+        <rect class="bs bs-rail-b" x="24" y="112" width="32" height="7" rx="3.5" fill="var(--line)"/>
+
+        <!-- heading block: expands on beat 1 -->
+        <rect class="bs bs-title" x="128" y="60" width="120" height="11" rx="5.5" fill="var(--foreground)"/>
+        <rect class="bs bs-sub" x="128" y="80" width="76" height="7" rx="3.5" fill="var(--line)"/>
+
+        <!-- row one: present from the start. Widths shift on beat 3. -->
+        <g class="bs-g1">
+          <rect class="bs bs-t1" x="128" y="104" width="140" height="60" rx="8" stroke="var(--line)"/>
+          <rect x="142" y="120" width="44" height="5" rx="2.5" fill="var(--line)"/>
+        </g>
+        <g class="bs bs-g2">
+          <rect class="bs bs-t2" x="280" y="104" width="140" height="60" rx="8" stroke="var(--line)"/>
+          <rect x="294" y="120" width="44" height="5" rx="2.5" fill="var(--line)"/>
+        </g>
+
+        <!-- row two: duplicated in on beat 2 -->
+        <g class="bs bs-g3">
+          <rect class="bs bs-t3" x="128" y="168" width="140" height="52" rx="8" stroke="var(--line)"/>
+          <rect x="142" y="184" width="44" height="5" rx="2.5" fill="var(--line)"/>
+        </g>
+        <g class="bs bs-g4">
+          <rect class="bs bs-t4" x="280" y="168" width="140" height="52" rx="8" stroke="var(--line)"/>
+          <rect x="294" y="184" width="44" height="5" rx="2.5" fill="var(--line)"/>
+        </g>
+
+        <!-- review pin: the same mark the pillar-1 art already uses -->
+        <g class="bs bs-pin">
+          <circle cx="420" cy="168" r="8" fill="var(--card)" stroke="var(--accent)"/>
+          <circle cx="420" cy="168" r="3" fill="var(--accent)"/>
+        </g>
+
+        <!-- the "thinking" beat: one accent hairline sweeping the surface -->
+        <g clip-path="url(#build-clip)">
+          <rect class="bs bs-scan" x="1" y="41" width="438" height="2" fill="var(--accent)"/>
+        </g>
+      </svg>
+
+      <ul class="build-prompts">
+        <li class="bs build-prompt bp1">
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
+          <span class="bs bt1">Tighten the hierarchy at the top of the page.</span>
+        </li>
+        <li class="bs build-prompt bp2">
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
+          <span class="bs bt2">Split the results into a two column grid.</span>
+        </li>
+        <li class="bs build-prompt bp3">
+          <svg class="agent-mark" viewBox="0 0 12 13" fill="none" aria-hidden="true"><use href="#agent-mark"/></svg>
+          <span class="bs bt3">Flag the card that fails our contrast rule.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Glance-level credibility. The substance lives in the Background
+         section further down; this strip only has to answer "who is this".
+         Round 4: it spans the full width beneath both hero columns, because
+         three inline credentials cannot hold together in a 492px column. -->
+    <ul class="cred-bar">
+      <li><strong>Axonius</strong><span>Director of Product Design</span><span class="cred-meta">Cybersecurity &middot; 2021-2026</span></li>
+      <li><strong>Salesforce</strong><span>Senior Manager, UX/UI</span><span class="cred-meta">2020-2021</span></li>
+      <li><strong>ClickSoftware</strong><span>UX Lead</span><span class="cred-meta">2017-2020</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     PILLARS
+     ========================================================================== -->
+<section class="section pillars">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The work</p>
+      <h2>What you actually get</h2>
+      <p class="section-sub">Two things, combined. Neither one works on its own.</p>
+    </div>
+
+    <div class="pillar-grid">
+
+      <div class="pillar">
+        <!-- Art 1: a product screen with its elements, one flagged.
+             This is the judgment layer: seeing what is actually wrong on the screen. -->
+        <div class="pillar-art art-cool">
+          <svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Abstract wireframe of a product screen with one element flagged for review">
+            <rect x="8" y="8" width="304" height="164" rx="12" fill="var(--card)" stroke="var(--line)"/>
+            <path d="M8 40h304" stroke="var(--line)"/>
+            <circle cx="24" cy="24" r="2.5" fill="var(--line-strong)"/>
+            <circle cx="34" cy="24" r="2.5" fill="var(--line)"/>
+            <circle cx="44" cy="24" r="2.5" fill="var(--line)"/>
+            <rect x="240" y="19" width="56" height="10" rx="5" fill="var(--tone-neutral)"/>
+
+            <path d="M76 40v132" stroke="var(--line)"/>
+            <rect x="22" y="56" width="40" height="6" rx="3" fill="var(--line-strong)"/>
+            <rect x="22" y="72" width="30" height="6" rx="3" fill="var(--line)"/>
+            <rect x="22" y="88" width="36" height="6" rx="3" fill="var(--line)"/>
+            <rect x="22" y="104" width="26" height="6" rx="3" fill="var(--line)"/>
+
+            <rect x="92" y="56" width="104" height="9" rx="4.5" fill="var(--foreground)"/>
+            <rect x="92" y="72" width="70" height="6" rx="3" fill="var(--line)"/>
+
+            <rect x="92" y="94" width="62" height="48" rx="8" stroke="var(--line)"/>
+            <rect x="102" y="106" width="30" height="5" rx="2.5" fill="var(--line)"/>
+            <rect x="102" y="118" width="42" height="5" rx="2.5" fill="var(--line)"/>
+
+            <rect x="162" y="94" width="62" height="48" rx="8" stroke="var(--accent)" stroke-width="1.25" fill="var(--accent-wash)"/>
+            <rect x="172" y="106" width="30" height="5" rx="2.5" fill="var(--line-strong)"/>
+            <rect x="172" y="118" width="42" height="5" rx="2.5" fill="var(--line)"/>
+
+            <rect x="232" y="94" width="62" height="48" rx="8" stroke="var(--line)"/>
+            <rect x="242" y="106" width="30" height="5" rx="2.5" fill="var(--line)"/>
+            <rect x="242" y="118" width="42" height="5" rx="2.5" fill="var(--line)"/>
+
+            <rect x="92" y="154" width="120" height="6" rx="3" fill="var(--line)"/>
+
+            <circle cx="224" cy="94" r="7" fill="var(--card)" stroke="var(--accent)"/>
+            <circle cx="224" cy="94" r="2.5" fill="var(--accent)"/>
+          </svg>
+        </div>
+        <h3>Senior product and UX judgment</h3>
+        <p>Finding the real gaps between the product, its users, and the business goal. Knowing what to cut, what to fix first, and what doesn't matter yet. This is the part AI cannot do for you.</p>
+      </div>
+
+      <div class="pillar">
+        <!-- Art 2: one whole product surface, with agents working around it.
+             Round 4: each surrounding node now carries the shared agent mark
+             (see the sprite at the top of the file) in place of the anonymous
+             dot it used to have, so the nodes read as agents acting on the
+             product rather than as floating labels. The pills grew from
+             44x16 to 56x22 to hold the mark at a legible size; the product
+             surface and all five accent connector dots are unchanged, so the
+             spoke geometry is exactly as it was. -->
+        <div class="pillar-art art-warm">
+          <svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Abstract diagram of a single product surface with five agents connected around it">
+            <path d="M82 31 110 52M238 31 210 52M62 95h38M258 95h-38M160 146v-18" stroke="var(--line)"/>
+
+            <rect x="100" y="52" width="120" height="76" rx="12" fill="var(--card)" stroke="var(--line-strong)"/>
+            <rect x="112" y="64" width="48" height="7" rx="3.5" fill="var(--foreground)"/>
+            <rect x="112" y="80" width="44" height="36" rx="6" fill="var(--tone-neutral)"/>
+            <rect x="164" y="80" width="44" height="36" rx="6" fill="var(--tone-neutral)"/>
+
+            <circle cx="110" cy="52" r="3" fill="var(--accent)"/>
+            <circle cx="210" cy="52" r="3" fill="var(--accent)"/>
+            <circle cx="100" cy="95" r="3" fill="var(--accent)"/>
+            <circle cx="220" cy="95" r="3" fill="var(--accent)"/>
+            <circle cx="160" cy="128" r="3" fill="var(--accent)"/>
+
+            <g>
+              <rect x="26" y="20" width="56" height="22" rx="11" fill="var(--card)" stroke="var(--line)"/>
+              <use href="#agent-mark" x="33" y="24.5"/>
+              <rect x="50" y="29" width="24" height="4" rx="2" fill="var(--line)"/>
+            </g>
+            <g>
+              <rect x="238" y="20" width="56" height="22" rx="11" fill="var(--card)" stroke="var(--line)"/>
+              <use href="#agent-mark" x="245" y="24.5"/>
+              <rect x="262" y="29" width="24" height="4" rx="2" fill="var(--line)"/>
+            </g>
+            <g>
+              <rect x="6" y="84" width="56" height="22" rx="11" fill="var(--card)" stroke="var(--line)"/>
+              <use href="#agent-mark" x="13" y="88.5"/>
+              <rect x="30" y="93" width="24" height="4" rx="2" fill="var(--line)"/>
+            </g>
+            <g>
+              <rect x="258" y="84" width="56" height="22" rx="11" fill="var(--card)" stroke="var(--line)"/>
+              <use href="#agent-mark" x="265" y="88.5"/>
+              <rect x="282" y="93" width="24" height="4" rx="2" fill="var(--line)"/>
+            </g>
+            <g>
+              <rect x="132" y="146" width="56" height="22" rx="11" fill="var(--card)" stroke="var(--line)"/>
+              <use href="#agent-mark" x="139" y="150.5"/>
+              <rect x="156" y="155" width="24" height="4" rx="2" fill="var(--line)"/>
+            </g>
+          </svg>
+        </div>
+        <h3>AI-accelerated execution</h3>
+        <p>Those decisions turn into flows, specs, and a working, demoable prototype fast enough to change what you decide next. Days, not months. Real artifacts, not slides.</p>
+      </div>
+
+    </div>
+
+    <p class="note">The AI setup I build to work with you is yours to keep. It's how I go fast, not what I'm selling.</p>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     BACKGROUND
+     Placed directly after the pillars on purpose. Pillar 1 makes the claim
+     ("senior product and UX judgment... the part AI cannot do for you"); this
+     section is what makes that claim true, and it lands well before Proof.
+     Leads on cybersecurity: a design leader who spent five years inside the
+     industry is the sharpest single fact on the page for a cyber founder.
+     Every figure here is verified. Do not add anything that isn't.
+     ========================================================================== -->
+<section class="section background">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Background</p>
+      <h2><span class="line">Twelve years in product design.</span> <span class="line">Five of them inside cybersecurity.</span></h2>
+    </div>
+
+    <!-- ROUND 4 - DENSITY AND RELATIONSHIP.
+         Cut: the three-stat row (it restated the h2 word for word, and its
+         36px numerals made this section rhyme with Proof and flatten it), the
+         section-sub (it restated the timeline directly below it), the second
+         Axonius title row, one credential line, and the portfolio block's own
+         eyebrow and rule.
+         Added: one eyebrow per column and a hairline between them, so the two
+         halves read as one statement in two parts rather than as two blocks
+         that happen to sit side by side. -->
+    <div class="bg-grid">
+
+      <!-- The spine-with-dots grammar is already the page's language (agent
+           diagram, mobile sprint rail). Reused here rather than inventing a
+           timeline style. Axonius is the only entry given a panel and an
+           accent dot: that is the "lead harder on cybersecurity" ask,
+           expressed in hierarchy instead of in adjectives. -->
+      <div class="bg-col">
+        <p class="eyebrow">Where I've done it</p>
+        <ol class="timeline">
+
+          <li class="role role-lead">
+            <div class="role-head">
+              <h3>Axonius</h3>
+              <span class="badge badge-dot">Cybersecurity</span>
+            </div>
+            <p class="role-title">Director of Product Design <span class="role-dates">Feb 2021 - Apr 2026</span></p>
+            <p class="role-body">Built the product design function from zero, joining as Head of Product Design. Led the design team and the front-end team.</p>
+          </li>
+
+          <li class="role">
+            <h3>Salesforce</h3>
+            <p class="role-title">Senior Manager, UX/UI <span class="role-dates">Jan 2020 - Feb 2021</span></p>
+          </li>
+
+          <li class="role">
+            <h3>ClickSoftware</h3>
+            <p class="role-title">UX Lead <span class="role-dates">Jul 2017 - Jan 2020</span></p>
+            <p class="role-body">Established the UX and UI practice from scratch.</p>
+          </li>
+
+          <li class="role">
+            <h3>Vizrt</h3>
+            <p class="role-title">UX Designer <span class="role-dates">Nov 2015 - Jul 2017</span></p>
+          </li>
+
+        </ol>
+      </div>
+
+      <!-- Second proof asset. Glimps proves the agent system and a shipped
+           product; this proves twelve years of craft. Deliberately a link,
+           not a screenshot - see the styles.css note. -->
+      <aside class="bg-col bg-aside">
+        <p class="eyebrow">What came out of it</p>
+
+        <div class="portfolio">
+          <h3>Twelve years of work, in one place</h3>
+          <p>Product design, UX, and design leadership, from enterprise platforms to cybersecurity. The site itself is built with AI.</p>
+          <a class="btn btn-secondary" href="https://ofirux.com" target="_blank" rel="noopener noreferrer">ofirux.com <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+
+        <!-- Same .cred-bar component as the hero, stacked instead of inline. -->
+        <ul class="cred-bar cred-bar-stack">
+          <li><strong>UX Lecturer</strong><span>Netcraft Academy, 2021-2023</span></li>
+          <li><strong>Mentor</strong><span>ADPList and MentorCruise, since 2021</span></li>
+        </ul>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     WHO THIS IS FOR - three doors
+     All three titles are Ofir's own first-person phrasing. Approved round 3;
+     offer-v0.2.md is being updated to match so the doc leads again.
+     ========================================================================== -->
+<section class="section who">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Who it's for</p>
+      <h2>Three ways in</h2>
+      <p class="section-sub">Different starting points, same sprint. Pick the one that sounds like you.</p>
+    </div>
+
+    <!-- ROUND 4.
+         (a) Doors 2 and 3 both genuinely start at Assess, so the repeated
+             label was fixed by qualifying it, not by inventing a different
+             stage: "your product" vs "your setup". Door 3 assesses how they
+             work, not only what they built.
+         (b) All three descriptions cut to roughly half.
+         (c) One illustration per card, drawn as a family on a shared 96x64
+             canvas in the page's existing 1px line language, escalating left
+             to right with the copy: an empty surface with the first element
+             placed on it, then a working surface, then a surface with agents
+             on it. Monochrome throughout - no accent - so they read as a set
+             and do not compete with the accent-carrying art above them.
+             Deliberately not a light bulb: a literal bulb is the one shape on
+             this page that would have looked bought rather than drawn. -->
+    <div class="door-grid">
+
+      <div class="door">
+        <div class="door-art" aria-hidden="true">
+          <svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="8.5" width="95" height="47" rx="8" stroke="var(--line)"/>
+            <rect x="36" y="20" width="24" height="24" rx="6" stroke="var(--line-strong)"/>
+            <path d="M48 27v10M43 32h10" stroke="var(--foreground)" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="34" y="49" width="28" height="4" rx="2" fill="var(--line)"/>
+          </svg>
+        </div>
+        <span class="badge">Starting</span>
+        <h3>"I want to build something, but I'm not sure how to go about it."</h3>
+        <p>A real idea, no product yet. I define what it actually is, then set you up to build it and stay alongside you while you do.</p>
+        <p class="door-entry">Start at <strong>Shape</strong></p>
+      </div>
+
+      <div class="door">
+        <div class="door-art" aria-hidden="true">
+          <svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="8.5" width="95" height="47" rx="8" stroke="var(--line)"/>
+            <path d="M0.5 20h95M28 20v35.5" stroke="var(--line)"/>
+            <circle cx="8" cy="14.5" r="1.5" fill="var(--line-strong)"/>
+            <circle cx="14" cy="14.5" r="1.5" fill="var(--line)"/>
+            <rect x="7" y="26" width="14" height="3" rx="1.5" fill="var(--line-strong)"/>
+            <rect x="7" y="33" width="10" height="3" rx="1.5" fill="var(--line)"/>
+            <rect x="7" y="40" width="12" height="3" rx="1.5" fill="var(--line)"/>
+            <rect x="35" y="26" width="30" height="5" rx="2.5" fill="var(--foreground)"/>
+            <rect x="35" y="35" width="26" height="14" rx="3" stroke="var(--line)"/>
+            <rect x="64" y="35" width="26" height="14" rx="3" stroke="var(--line)"/>
+          </svg>
+        </div>
+        <span class="badge">Built</span>
+        <h3>"I have something, and I need a review."</h3>
+        <p>An MVP or a shipped feature that isn't clear or launch-ready yet. What's missing isn't more engineering, it's judgment.</p>
+        <p class="door-entry">Start at <strong>Assess</strong> <span class="door-qual">your product</span></p>
+      </div>
+
+      <div class="door">
+        <div class="door-art" aria-hidden="true">
+          <svg viewBox="0 0 96 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 15.5h11l8 6M79 15.5h-11l-8 6M48 50v-4.5" stroke="var(--line)"/>
+            <rect x="30" y="21.5" width="36" height="24" rx="5" stroke="var(--line-strong)"/>
+            <rect x="35" y="26" width="14" height="3.5" rx="1.75" fill="var(--foreground)"/>
+            <rect x="35" y="33" width="12" height="8" rx="2" stroke="var(--line)"/>
+            <rect x="49" y="33" width="12" height="8" rx="2" stroke="var(--line)"/>
+            <circle cx="36" cy="21.5" r="1.5" fill="var(--line-strong)"/>
+            <circle cx="60" cy="21.5" r="1.5" fill="var(--line-strong)"/>
+            <circle cx="48" cy="45.5" r="1.5" fill="var(--line-strong)"/>
+            <use href="#agent-mark" x="5" y="4"/>
+            <use href="#agent-mark" x="79" y="4"/>
+            <use href="#agent-mark" x="42" y="50"/>
+          </svg>
+        </div>
+        <span class="badge">Scaling</span>
+        <h3>"I'm already building with AI, and I want it to hold up."</h3>
+        <p>It works, but it's ad hoc. Results vary and nothing carries over between sessions. I put structure around how you already work, so it keeps producing.</p>
+        <p class="door-entry">Start at <strong>Assess</strong> <span class="door-qual">your setup</span></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     THE SPRINT - reads left to right on desktop, top to bottom on mobile
+     ========================================================================== -->
+<section class="section offer">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The sprint</p>
+      <h2>Assess, Shape, Build</h2>
+      <p class="section-sub">One sequence, about six weeks end to end. Stages can also be taken on their own.</p>
+    </div>
+
+    <ol class="stage-grid">
+      <li class="stage">
+        <span class="stage-num">01</span>
+        <h3>Assess</h3>
+        <p class="stage-tag">Product Gap Review &middot; ~1 week</p>
+        <p class="stage-body">An audit against your business goals: user flows, onboarding, information architecture, launch readiness. You get a prioritized gap map with annotated screenshots, severity and impact per issue, and clear next steps. Not a deck. A working document you can act on the same day.</p>
+      </li>
+      <li class="stage">
+        <span class="stage-num">02</span>
+        <h3>Shape</h3>
+        <p class="stage-tag">Product Definition &middot; ~2 weeks</p>
+        <p class="stage-body">Findings become decisions. Flows, spec, requirements, scope, design-system fit. A Product Blueprint ready to hand to whoever builds it: your team, a freelancer, or me.</p>
+      </li>
+      <li class="stage">
+        <span class="stage-num">03</span>
+        <h3>Build</h3>
+        <p class="stage-tag">AI-Assisted Prototype &middot; ~3 weeks</p>
+        <p class="stage-body">A working, testable, demoable prototype built with AI tools and your existing components. Production-minded prototyping: fast, but built to be believed, not a mockup.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     PROOF
+     ========================================================================== -->
+<section class="section proof">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Proof</p>
+      <h2>I did it on my own product first</h2>
+      <p class="section-sub">Glimps is a UX inspiration gallery for the cybersecurity industry. I built it solo, and it's live.</p>
+    </div>
+
+    <!-- Live product screenshot, framed as a browser window. -->
+    <figure class="browser">
+      <div class="browser-bar" aria-hidden="true">
+        <span class="browser-dots"><i></i><i></i><i></i></span>
+        <span class="browser-url">glimps.design</span>
+      </div>
+      <div class="browser-shot">
+        <img src="assets/glimps-home.png" width="1440" height="900" loading="lazy" decoding="async"
+             alt="The Glimps homepage, showing a searchable gallery of 117 cybersecurity companies with filter tags and product screen cards.">
+      </div>
+    </figure>
+
+    <div class="proof-stats">
+      <dl class="stats">
+        <div class="stat"><dt>Companies</dt><dd>117</dd></div>
+        <div class="stat"><dt>Real product screens</dt><dd>3,500+</dd></div>
+        <div class="stat"><dt>Signups in week one</dt><dd>77</dd></div>
+      </dl>
+      <a class="btn btn-secondary" href="https://glimps.design" target="_blank" rel="noopener noreferrer">See it live <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+
+    <p class="proof-lead">I didn't build it alone in the usual sense. I direct a team of AI agents, each owning a domain, each with persistent memory, each with the authority to push back on me. This is the same setup I stand up for clients.</p>
+
+    <!-- Agent system diagram.
+         Uses the Glimps "Dark Overlay Surface" pattern (design-system.md sec. 3):
+         --modal-* token family, 16px radius, shadow-2xl.
+         Desktop: hub and spoke. Below 960px: vertical spine. -->
+    <figure class="agent-map">
+      <figcaption class="map-caption">
+        <h3>The system that shipped Glimps</h3>
+        <span>One operator &middot; five agents</span>
+      </figcaption>
+
+      <div class="map-grid">
+
+        <div class="map-rail" aria-hidden="true"></div>
+
+        <div class="map-hub">
+          <span class="hub-label">The product</span>
+          <span class="hub-name">Glimps</span>
+          <span class="hub-meta">117 companies &middot; 3,500+ screens</span>
+          <span class="hub-badge">Live in production</span>
+        </div>
+
+        <article class="node n1">
+          <span class="node-role">Product</span>
+          <dl>
+            <dt>Owns</dt>
+            <dd>Scope, roadmap, what gets built next</dd>
+            <dt class="shipped">Shipped</dt>
+            <dd>Killed features, held the launch date, blocked scope creep</dd>
+          </dl>
+        </article>
+
+        <article class="node n2">
+          <span class="node-role">Design</span>
+          <dl>
+            <dt>Owns</dt>
+            <dd>Design system, component library, visual consistency</dd>
+            <dt class="shipped">Shipped</dt>
+            <dd>Design tokens, Storybook, shared components across the app</dd>
+          </dl>
+        </article>
+
+        <article class="node n3">
+          <span class="node-role">Content</span>
+          <dl>
+            <dt>Owns</dt>
+            <dd>Sourcing, extraction, quality standards</dd>
+            <dt class="shipped">Shipped</dt>
+            <dd>3,500+ screens sourced, named, and tagged</dd>
+          </dl>
+        </article>
+
+        <article class="node n4">
+          <span class="node-role">Marketing</span>
+          <dl>
+            <dt>Owns</dt>
+            <dd>Positioning, launch, retention</dd>
+            <dt class="shipped">Shipped</dt>
+            <dd>Launch sequence, week-one post, lifecycle email</dd>
+          </dl>
+        </article>
+
+        <article class="node n5">
+          <span class="node-role">Engineering</span>
+          <dl>
+            <dt>Owns</dt>
+            <dd>Architecture, feasibility, infrastructure</dd>
+            <dt class="shipped">Shipped</dt>
+            <dd>Auth, delivery pipeline, integrations</dd>
+          </dl>
+        </article>
+
+      </div>
+
+      <p class="map-foot"><span>Each agent holds its own memory, its own standards, and the authority to tell me no. I make the calls they escalate.</span></p>
+    </figure>
+
+    <p class="proof-close">This works, and it has real limits. I know which decisions still need a human because I found out on my own product, not on a client's.</p>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     CONTACT - full-bleed dark close, Dark Overlay Surface token family
+     ========================================================================== -->
+<section class="section contact" id="contact">
+  <!-- Two agent clusters flanking the invitation. Same node vocabulary as the
+       pillar art and the proof diagram, placed in the outer margins so it can
+       never collide with the copy. Hidden below 1120px. -->
+  <div class="contact-motif" aria-hidden="true">
+    <svg class="motif-side motif-l" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M180 24v212" stroke="var(--modal-border)"/>
+      <path d="M116 41h34l30 89M116 130h64M116 219h34l30-89" stroke="var(--modal-border)"/>
+      <circle cx="180" cy="130" r="4" fill="var(--accent)"/>
+      <rect x="20" y="30" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="34.5"/>
+      <rect x="47" y="39" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+      <rect x="20" y="119" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="123.5"/>
+      <rect x="47" y="128" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+      <rect x="20" y="208" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="212.5"/>
+      <rect x="47" y="217" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+    </svg>
+    <svg class="motif-side motif-r" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M180 24v212" stroke="var(--modal-border)"/>
+      <path d="M116 41h34l30 89M116 130h64M116 219h34l30-89" stroke="var(--modal-border)"/>
+      <circle cx="180" cy="130" r="4" fill="var(--accent)"/>
+      <rect x="20" y="30" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="34.5"/>
+      <rect x="47" y="39" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+      <rect x="20" y="119" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="123.5"/>
+      <rect x="47" y="128" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+      <rect x="20" y="208" width="96" height="22" rx="11" stroke="var(--modal-border)" fill="var(--modal-bg)"/>
+      <use href="#agent-mark" x="29" y="212.5"/>
+      <rect x="47" y="217" width="46" height="4" rx="2" fill="var(--modal-border)"/>
+    </svg>
+  </div>
+
+  <div class="wrap wrap-narrow contact-inner">
+    <p class="eyebrow">Next</p>
+    <h2>Let's talk</h2>
+    <p class="contact-body">A short conversation to see whether there's a real gap worth a Sprint. No pitch deck, no automated report. If there's nothing public to look at yet, a short screen-share works just as well.</p>
+    <!-- CONTACT EMAIL: switch to ofir@pixelsperson.com here (href + link text) once the mailbox is activated. -->
+    <a class="btn btn-invert" href="mailto:ofir.rushinek@gmail.com?subject=AI%20Product%20Acceleration%20Sprint">ofir.rushinek@gmail.com</a>
+    <p class="contact-meta">Taking on three founding clients.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Ofir Rushinek</p>
+    <p>Product &amp; UX, at AI speed</p>
+  </div>
+</footer>
+
+</body>
+</html>
