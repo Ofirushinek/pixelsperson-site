@@ -46,6 +46,16 @@
   pointer-events: none;
 }
 .review-hero .wrap { position: relative; }
+
+/* Two-column hero: copy left, the maker's own homepage (browser-framed) right.
+   Composes the existing .shot browser-frame vocabulary - no new tokens. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 56px;
+  align-items: center;
+}
+.rh-copy { min-width: 0; }
 .review-hero h1 {
   font-size: var(--text-hero);
   line-height: 1.08;
@@ -54,43 +64,77 @@
   margin: 0 0 20px;
   max-width: 16ch;
 }
-.review-hero .hero-sub {
+.review-hero .rh-sub {
   font-size: var(--text-body-lg);
   line-height: 1.6;
   color: var(--foreground-secondary);
   margin: 0;
 }
+/* review-hero-scoped names: styles.css already binds .hero-copy/.hero-art to
+   grid-area on the main site's hero, so this page uses its own prefix. */
+.rh-art { min-width: 0; }
+.rh-art .shot { margin: 0; box-shadow: var(--shadow-2xl); }
 
-/* ---- WHAT'S WORKING: three text-only tiles ------------------------------- */
-.win-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-}
-.win {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 28px;
+/* ---- WHAT'S WORKING: tabbed component ------------------------------------ */
+/* Tab row = a rail (--border) with an --accent underline on the active tab.
+   Reuses the .shot frame (bar-less, .shot-plain) for each clean example.
+   Zero new tokens; the active-weight ghost prevents any reflow on switch. */
+.tab-row {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
 }
-/* same top-rule grammar the main page's .pillar h3 uses, kept accent here so
-   the "working" set reads as the positive column. */
-.win-mark {
-  width: 28px;
-  height: 3px;
-  border-radius: var(--radius-full);
-  background: var(--accent);
-  flex: none;
+.tab {
+  display: inline-grid;
+  -webkit-appearance: none;
+          appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin: 0 28px -1px 0;
+  padding: 12px 2px;
+  font: inherit;
+  font-size: var(--text-body-lg);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--foreground-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
 }
-.win p {
-  margin: 0;
+.tab > span { grid-area: 1 / 1; }
+.tab::after {                 /* reserves the bold width so activating never shifts the row */
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+.tab:hover { color: var(--foreground); }
+.tab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+.tab.is-active {
+  color: var(--foreground);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+.tab-panel { display: none; }
+.tab-panel.is-active { display: block; }
+/* bar-less variant of the .shot frame: a clean framed capture, no chrome */
+.shot-plain { margin: 0; }
+.shot-plain .shot-canvas { border-radius: inherit; }
+.tab-note {
+  margin: 18px 0 0;
   font-size: var(--text-body-lg);
   line-height: 1.5;
   color: var(--foreground);
+  max-width: 62ch;
 }
 
 /* ---- 3 THINGS I'D TIGHTEN: stacked annotated screenshots (centerpiece) --- */
@@ -307,12 +351,17 @@
 
 /* ---- RESPONSIVE ---------------------------------------------------------- */
 @media (max-width: 860px) {
-  .win-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  /* hero art drops under the title, kept compact and left-aligned */
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .rh-art { max-width: 560px; }
+  .tab { margin-right: 20px; }
 }
 @media (max-width: 620px) {
   .review-hero { padding: 64px 0 48px; }
+  .hero-grid { gap: 28px; }
   .fix-head { flex-direction: row; gap: 12px; }
   .annot-label { height: 20px; font-size: 11px; padding: 0 7px; }
+  .tab { font-size: var(--text-body); margin-right: 16px; }
 }
 </style>
 </head>
@@ -332,14 +381,30 @@
      ========================================================================== -->
 <section class="review-hero">
   <div class="wrap">
-    <p class="eyebrow eyebrow-chip">
-      <svg class="chip-glyph" viewBox="0 0 12 12" aria-hidden="true" fill="none">
-        <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-      </svg>
-      A UX review for TemplatesOn
-    </p>
-    <h1>I recorded myself using TemplatesOn. Here's what I saw.</h1>
-    <p class="hero-sub">3 things working, 3 I'd tighten.</p>
+    <div class="hero-grid">
+      <div class="rh-copy">
+        <p class="eyebrow eyebrow-chip">
+          <svg class="chip-glyph" viewBox="0 0 12 12" aria-hidden="true" fill="none">
+            <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          A UX review for TemplatesOn
+        </p>
+        <h1>I recorded myself using TemplatesOn. Here's what I saw.</h1>
+        <p class="rh-sub">3 things working, 3 I'd tighten.</p>
+      </div>
+      <div class="rh-art">
+        <figure class="shot">
+          <div class="shot-bar" aria-hidden="true">
+            <span class="shot-dots"><i></i><i></i><i></i></span>
+            <span class="shot-url">templateson.com</span>
+          </div>
+          <div class="shot-canvas">
+            <img src="/assets/r/templateson/home.png" width="2880" height="1800" loading="eager" decoding="async"
+                 alt="The TemplatesOn homepage: a hero reading 'Generate images and PDFs from your automations' above the row of render types.">
+          </div>
+        </figure>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -352,18 +417,41 @@
       <p class="eyebrow">The good</p>
       <h2>What's working</h2>
     </div>
-    <div class="win-grid">
-      <div class="win">
-        <span class="win-mark" aria-hidden="true"></span>
-        <p>Clean first impression. The hero says what it is in one line, no jargon.</p>
+    <div class="tabs" id="winTabs">
+      <div class="tab-row" role="tablist" aria-label="What's working">
+        <button type="button" class="tab is-active" role="tab" id="wt1" aria-controls="wp1" aria-selected="true" data-label="Clean first impression"><span>Clean first impression</span></button>
+        <button type="button" class="tab" role="tab" id="wt2" aria-controls="wp2" aria-selected="false" tabindex="-1" data-label="Template previews are the star"><span>Template previews are the star</span></button>
+        <button type="button" class="tab" role="tab" id="wt3" aria-controls="wp3" aria-selected="false" tabindex="-1" data-label="Fast to try"><span>Fast to try</span></button>
       </div>
-      <div class="win">
-        <span class="win-mark" aria-hidden="true"></span>
-        <p>The template previews are the star. Showing real output up front builds trust fast.</p>
+
+      <div class="tab-panel is-active" role="tabpanel" id="wp1" aria-labelledby="wt1">
+        <figure class="shot shot-plain">
+          <div class="shot-canvas">
+            <img src="/assets/r/templateson/tab-hero.png" width="2350" height="964" loading="lazy" decoding="async"
+                 alt="The TemplatesOn hero: 'Generate images and PDFs from your automations', a short sub-line and two clear buttons.">
+          </div>
+        </figure>
+        <p class="tab-note">The hero says what it is in one line, no jargon.</p>
       </div>
-      <div class="win">
-        <span class="win-mark" aria-hidden="true"></span>
-        <p>Fast to try. I could start browsing without hitting a signup wall.</p>
+
+      <div class="tab-panel" role="tabpanel" id="wp2" aria-labelledby="wt2" hidden>
+        <figure class="shot shot-plain">
+          <div class="shot-canvas">
+            <img src="/assets/r/templateson/tab-previews.png" width="2265" height="820" loading="lazy" decoding="async"
+                 alt="Three real template previews on the TemplatesOn homepage: automated invoices, social images, and certificates.">
+          </div>
+        </figure>
+        <p class="tab-note">Showing real output up front builds trust fast.</p>
+      </div>
+
+      <div class="tab-panel" role="tabpanel" id="wp3" aria-labelledby="wt3" hidden>
+        <figure class="shot shot-plain">
+          <div class="shot-canvas">
+            <img src="/assets/r/templateson/tab-browse.png" width="2265" height="935" loading="lazy" decoding="async"
+                 alt="The TemplatesOn browse page: 'Browse templates, then make them yours' above an open gallery of template previews, no signup wall.">
+          </div>
+        </figure>
+        <p class="tab-note">I could start browsing without hitting a signup wall.</p>
       </div>
     </div>
   </div>
@@ -529,6 +617,47 @@
   }
   btn.addEventListener("click", start);
   video.addEventListener("play", function () { wrap.classList.add("is-playing"); });
+})();
+</script>
+
+<!-- What's-working tabs: click (or arrow-key) a tab to reveal its clean panel
+     beneath the row. First tab is open on load. No new tokens, no new markup
+     vocabulary - the panel reuses the .shot frame. -->
+<script>
+(function () {
+  var group = document.getElementById("winTabs");
+  if (!group) return;
+  var tabs = [].slice.call(group.querySelectorAll(".tab"));
+  var panels = [].slice.call(group.querySelectorAll(".tab-panel"));
+
+  function activate(i, focus) {
+    tabs.forEach(function (t, j) {
+      var on = j === i;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach(function (p, j) {
+      var on = j === i;
+      p.classList.toggle("is-active", on);
+      if (on) { p.removeAttribute("hidden"); } else { p.setAttribute("hidden", ""); }
+    });
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { activate(i, false); });
+    t.addEventListener("keydown", function (e) {
+      var n;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") { n = (i + 1) % tabs.length; }
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { n = (i - 1 + tabs.length) % tabs.length; }
+      else if (e.key === "Home") { n = 0; }
+      else if (e.key === "End") { n = tabs.length - 1; }
+      else { return; }
+      e.preventDefault();
+      activate(n, true);
+    });
+  });
 })();
 </script>
 
