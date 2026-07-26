@@ -221,17 +221,26 @@
   aspect-ratio: 16 / 9;
   background: var(--modal-bg);
 }
-.player img {
+.player-video {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: top center;
+  background: var(--modal-bg);
+  display: block;
 }
+/* Poster-state scrim: only present while the overlay is showing. Decorative,
+   so it never intercepts clicks on the native controls once playing. */
 .player::after {
   content: "";
   position: absolute; inset: 0;
   background: linear-gradient(180deg, rgb(2 8 23 / 0.10), rgb(2 8 23 / 0.55));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 160ms ease;
 }
+.player.is-playing::after { opacity: 0; }
+/* The overlay is a real button: full-bleed click target over the poster. */
 .player-ui {
   position: absolute; inset: 0;
   display: flex;
@@ -240,6 +249,21 @@
   justify-content: center;
   gap: 16px;
   z-index: 1;
+  width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  -webkit-appearance: none;
+          appearance: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  transition: opacity 160ms ease;
+}
+.player.is-playing .player-ui {
+  opacity: 0;
+  pointer-events: none;
 }
 .play-btn {
   width: 76px; height: 76px;
@@ -458,14 +482,20 @@
       <p class="eyebrow">The recording</p>
       <h2>Watch the full review</h2>
     </div>
-    <figure class="player">
-      <img src="/assets/r/templateson/poster.png" alt="Poster frame: the TemplatesOn homepage, the site reviewed in the video.">
-      <div class="player-ui">
+    <figure class="player" id="reviewPlayer">
+      <video class="player-video" id="reviewVideo" controls playsinline preload="metadata"
+             poster="/assets/r/templateson/poster.png"
+             aria-label="The full UX review recording">
+        <source src="/assets/r/templateson/review.mp4" type="video/mp4">
+        Your browser can't play embedded video.
+        <a href="/assets/r/templateson/review.mp4">Download the recording</a>.
+      </video>
+      <button type="button" class="player-ui" id="reviewPlay" aria-label="Play the full review">
         <span class="play-btn" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="var(--primary-foreground)"><path d="M6 4.5v15l14-7.5z"/></svg>
         </span>
-        <span class="player-hint">Full video goes here</span>
-      </div>
+        <span class="player-hint">Watch the full review</span>
+      </button>
     </figure>
     <p class="player-cap">An AI persona actually using your site - real cursor, real scrolling, thinking out loud.</p>
   </div>
@@ -481,6 +511,26 @@
 </section>
 
 </main>
+
+<!-- Review player: click-to-play. The overlay hands off to native controls
+     on first play; audio is on (not muted). No new tokens, no new markup
+     vocabulary - the overlay is the same .player-ui composition. -->
+<script>
+(function () {
+  var wrap = document.getElementById("reviewPlayer");
+  var video = document.getElementById("reviewVideo");
+  var btn = document.getElementById("reviewPlay");
+  if (!wrap || !video || !btn) return;
+
+  function start() {
+    wrap.classList.add("is-playing");
+    var p = video.play();
+    if (p && typeof p.catch === "function") { p.catch(function () {}); }
+  }
+  btn.addEventListener("click", start);
+  video.addEventListener("play", function () { wrap.classList.add("is-playing"); });
+})();
+</script>
 
 <footer class="site-footer">
   <div class="wrap footer-inner">
