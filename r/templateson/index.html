@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>A UX review for TemplatesOn - Ofir Rushinek</title>
+<meta name="description" content="I recorded myself using TemplatesOn. Three things working, three I'd tighten. A short UX review from Ofir Rushinek.">
+<meta name="theme-color" content="#F8FAFC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Inter: the Glimps design system typeface (design-system.md, sec. 2.1) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- The one shared design system. This page adds NO new tokens - every value
+     below comes from styles.css :root. -->
+<link rel="stylesheet" href="/styles.css">
+
+<!-- ==========================================================================
+     REVIEW-PAGE COMPOSITION (pixelsperson.com/r/<company>)
+     Scoped, additive CSS. It composes existing components and tokens only:
+       - .site-header / .site-footer / .section / .section-head / .eyebrow
+         / .eyebrow-chip / .btn / .browser frame  reused as-is from styles.css
+       - the annotation callout is built entirely from --accent, --radius-*,
+         --shadow-*, --text-caption and color-mix on --accent. No raw hex,
+         no new color, no new vocabulary. It reads as a Figma frame-selection:
+         an accent-outlined region with a small filled label tag at its corner.
+     ========================================================================== -->
+<style>
+/* ---- HERO (single column - no art variant of the main .hero) ------------- */
+.review-hero {
+  position: relative;
+  padding: 88px 0 72px;
+  background:
+    linear-gradient(180deg, var(--tone-warm), var(--background)),
+    var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.review-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--dots);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+          mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+.review-hero .wrap { position: relative; }
+.review-hero h1 {
+  font-size: var(--text-hero);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin: 0 0 20px;
+  max-width: 16ch;
+}
+.review-hero .hero-sub {
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  color: var(--foreground-secondary);
+  margin: 0;
+}
+
+/* ---- WHAT'S WORKING: three text-only tiles ------------------------------- */
+.win-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.win {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* same top-rule grammar the main page's .pillar h3 uses, kept accent here so
+   the "working" set reads as the positive column. */
+.win-mark {
+  width: 28px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  flex: none;
+}
+.win p {
+  margin: 0;
+  font-size: var(--text-body-lg);
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+/* ---- 3 THINGS I'D TIGHTEN: stacked annotated screenshots (centerpiece) --- */
+.fix { margin-top: 56px; }
+.fix:first-of-type { margin-top: 0; }
+.fix-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+.fix-num {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  line-height: 1.2;
+}
+.fix-copy h3 {
+  font-size: var(--text-h1);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+.fix-copy p {
+  margin: 0;
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
+/* the screenshot frame reuses the .browser vocabulary (bar + shot). */
+.shot {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--tone-neutral);
+  border-bottom: 1px solid var(--border);
+}
+.shot-dots { display: inline-flex; gap: 7px; flex: none; }
+.shot-dots i {
+  width: 10px; height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--line);
+}
+.shot-url {
+  flex: 1;
+  max-width: 240px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-caption);
+  color: var(--foreground-secondary);
+}
+.shot-canvas { position: relative; line-height: 0; }
+.shot-canvas img { display: block; width: 100%; height: auto; }
+
+/* THE ANNOTATION CALLOUT. Accent-outlined region + a filled corner label,
+   the way a selected frame reads in Figma. Region fill and outer ring are
+   color-mix on --accent so no raw color enters the page. */
+.annot {
+  position: absolute;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.annot-label {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  transform: translateY(-100%);
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  background: var(--accent);
+  color: var(--primary-foreground);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* ---- WHO'S BEHIND THIS ---------------------------------------------------- */
+.who-body p {
+  font-size: var(--text-body-lg);
+  line-height: 1.7;
+  color: var(--foreground);
+  margin: 0 0 20px;
+  max-width: 62ch;
+}
+.who-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+.who-link:hover { text-decoration: underline; }
+
+/* ---- THE VIDEO (bottom) --------------------------------------------------- */
+.player {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-2xl);
+  border: 1px solid var(--border);
+  aspect-ratio: 16 / 9;
+  background: var(--modal-bg);
+}
+.player img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.player::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(2 8 23 / 0.10), rgb(2 8 23 / 0.55));
+}
+.player-ui {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1;
+}
+.play-btn {
+  width: 76px; height: 76px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-2xl);
+}
+.play-btn svg { width: 26px; height: 26px; margin-left: 4px; }
+.player-hint {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--modal-text);
+  background: rgb(2 8 23 / 0.35);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+.player-cap {
+  margin: 20px 0 0;
+  font-size: var(--text-sm);
+  color: var(--foreground-secondary);
+  text-align: center;
+}
+
+/* ---- SOFT CLOSE (dark, reuses the .contact surface family) --------------- */
+.close-band { background: var(--modal-bg); }
+.close-band .wrap { text-align: center; }
+.close-band p {
+  font-size: var(--text-h1);
+  line-height: 1.5;
+  color: var(--modal-text);
+  margin: 0 auto;
+  max-width: 24ch;
+  font-weight: 500;
+}
+
+/* ---- RESPONSIVE ---------------------------------------------------------- */
+@media (max-width: 860px) {
+  .win-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 620px) {
+  .review-hero { padding: 64px 0 48px; }
+  .fix-head { flex-direction: row; gap: 12px; }
+  .annot-label { height: 20px; font-size: 11px; padding: 0 7px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="https://pixelsperson.com" style="text-decoration:none;color:inherit;">Ofir Rushinek</a>
+    <a class="nav-cta" href="https://pixelsperson.com/#contact">Get in touch</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ==========================================================================
+     1. HEADER (personalized)
+     ========================================================================== -->
+<section class="review-hero">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-chip">
+      <svg class="chip-glyph" viewBox="0 0 12 12" aria-hidden="true" fill="none">
+        <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      A UX review for TemplatesOn
+    </p>
+    <h1>I recorded myself using TemplatesOn. Here's what I saw.</h1>
+    <p class="hero-sub">3 things working, 3 I'd tighten.</p>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     2. WHAT'S WORKING - three text-only tiles
+     ========================================================================== -->
+<section class="section pillars">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The good</p>
+      <h2>What's working</h2>
+    </div>
+    <div class="win-grid">
+      <div class="win">
+        <span class="win-mark" aria-hidden="true"></span>
+        <p>Clean first impression. The hero says what it is in one line, no jargon.</p>
+      </div>
+      <div class="win">
+        <span class="win-mark" aria-hidden="true"></span>
+        <p>The template previews are the star. Showing real output up front builds trust fast.</p>
+      </div>
+      <div class="win">
+        <span class="win-mark" aria-hidden="true"></span>
+        <p>Fast to try. I could start browsing without hitting a signup wall.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     3. THREE THINGS I'D TIGHTEN - the centerpiece.
+     Each block = a real headless capture of templateson.com with an
+     accent-outlined region + corner label pointing at the exact area.
+     ========================================================================== -->
+<section class="section background">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The gaps</p>
+      <h2>3 things I'd tighten</h2>
+    </div>
+
+    <!-- Block 1: pricing -->
+    <div class="fix">
+      <div class="fix-head">
+        <span class="fix-num">01</span>
+        <div class="fix-copy">
+          <h3>Your pricing hides the paid tiers.</h3>
+          <p>The page shows a free tier but the paid plans sit behind a click. Someone deciding if this fits their budget has to go hunting. Put the plans on the page, side by side.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="shot-bar" aria-hidden="true">
+          <span class="shot-dots"><i></i><i></i><i></i></span>
+          <span class="shot-url">templateson.com</span>
+        </div>
+        <div class="shot-canvas">
+          <img src="/assets/r/templateson/pricing.png" width="1680" height="720" loading="lazy" decoding="async"
+               alt="The TemplatesOn pricing section, showing only the free plan with a 'See pricing' button for the paid tiers.">
+          <span class="annot" style="left:40%;top:66%;width:20%;height:16%;">
+            <span class="annot-label">Paid plans behind a click</span>
+          </span>
+        </div>
+      </figure>
+    </div>
+
+    <!-- Block 2: top nav -->
+    <div class="fix">
+      <div class="fix-head">
+        <span class="fix-num">02</span>
+        <div class="fix-copy">
+          <h3>The top nav is carrying 20+ items.</h3>
+          <p>The menu tries to expose everything at once, so nothing stands out. Group it down to the 4-5 things a first-time visitor actually needs.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="shot-bar" aria-hidden="true">
+          <span class="shot-dots"><i></i><i></i><i></i></span>
+          <span class="shot-url">templateson.com</span>
+        </div>
+        <div class="shot-canvas">
+          <img src="/assets/r/templateson/nav.png" width="2880" height="200" loading="lazy" decoding="async"
+               alt="The TemplatesOn top navigation bar, packed with links: Pricing, Templates, Blog, Features, Usage, Compare, Use cases, Contact.">
+          <span class="annot" style="left:25.5%;top:24%;width:49.5%;height:48%;">
+            <span class="annot-label">20+ nav items competing</span>
+          </span>
+        </div>
+      </figure>
+    </div>
+
+    <!-- Block 3: carousel -->
+    <div class="fix">
+      <div class="fix-head">
+        <span class="fix-num">03</span>
+        <div class="fix-copy">
+          <h3>A feature block repeats in the carousel.</h3>
+          <p>The same card shows up twice as you scroll, which makes the page feel longer than it is and dilutes the strong stuff. Cut the duplicate.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="shot-bar" aria-hidden="true">
+          <span class="shot-dots"><i></i><i></i><i></i></span>
+          <span class="shot-url">templateson.com</span>
+        </div>
+        <div class="shot-canvas">
+          <img src="/assets/r/templateson/carousel.png" width="2880" height="660" loading="lazy" decoding="async"
+               alt="The TemplatesOn feature carousel, a horizontal row of cards including a duplicated feature block.">
+          <span class="annot" style="left:26.5%;top:24%;width:18%;height:54%;">
+            <span class="annot-label">Repeated card</span>
+          </span>
+        </div>
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==========================================================================
+     4. WHO'S BEHIND THIS
+     ========================================================================== -->
+<section class="section who">
+  <div class="wrap wrap-narrow">
+    <div class="section-head">
+      <p class="eyebrow">Context</p>
+      <h2>Who's behind this</h2>
+    </div>
+    <div class="who-body">
+      <p>I'm Ofir. 12 years in product design, 5 of them leading design in cybersecurity, most recently building the design function at Axonius from zero. I now work with founders, using AI to move fast.</p>
+      <p>This review was recorded by an AI tool I'm building - a persona that actually uses a live site and talks through it like a real user. TemplatesOn is one of the first it's looked at.</p>
+      <a class="who-link" href="https://pixelsperson.com">More about how I work <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     5. THE VIDEO (at the bottom) - placeholder player, poster = the site
+     ========================================================================== -->
+<section class="section offer">
+  <div class="wrap wrap-narrow">
+    <div class="section-head">
+      <p class="eyebrow">The recording</p>
+      <h2>Watch the full review</h2>
+    </div>
+    <figure class="player">
+      <img src="/assets/r/templateson/poster.png" alt="Poster frame: the TemplatesOn homepage, the site reviewed in the video.">
+      <div class="player-ui">
+        <span class="play-btn" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="var(--primary-foreground)"><path d="M6 4.5v15l14-7.5z"/></svg>
+        </span>
+        <span class="player-hint">Full video goes here</span>
+      </div>
+    </figure>
+    <p class="player-cap">An AI persona actually using your site - real cursor, real scrolling, thinking out loud.</p>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     6. SOFT CLOSE
+     ========================================================================== -->
+<section class="section close-band">
+  <div class="wrap wrap-narrow">
+    <p>If the rest of the notes are useful, or you want to talk any of this through, just reply. No pitch.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Ofir Rushinek</p>
+    <p>Product &amp; UX, at AI speed</p>
+  </div>
+</footer>
+
+</body>
+</html>
