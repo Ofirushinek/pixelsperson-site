@@ -51,7 +51,7 @@
    Composes the existing .shot browser-frame vocabulary - no new tokens. */
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   gap: 56px;
   align-items: center;
 }
@@ -74,6 +74,33 @@
    grid-area on the main site's hero, so this page uses its own prefix. */
 .rh-art { min-width: 0; }
 .rh-art .shot { margin: 0; box-shadow: var(--shadow-2xl); }
+
+/* HERO VIDEO: the maker's own homepage is the poster (still framed in the
+   templateson.com browser chrome), and pressing play reveals the review.
+   Reuses the .shot browser frame + the click-to-play .player-ui composition
+   below - no new tokens. home.png (2880x1800) and review.mp4 (1440x900) share
+   the same 16:10 ratio, so cover never crops the poster. */
+.hero-canvas { aspect-ratio: 16 / 10; background: var(--modal-bg); }
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--modal-bg);
+  display: block;
+}
+/* poster-state scrim over the homepage capture; decorative, so it never
+   intercepts clicks on the native controls once playing. */
+.hero-canvas::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(2 8 23 / 0.10), rgb(2 8 23 / 0.55));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+.shot.is-playing .hero-canvas::after { opacity: 0; }
+.shot.is-playing .player-ui { opacity: 0; pointer-events: none; }
 
 /* ---- WHAT'S WORKING: tabbed component ------------------------------------ */
 /* Tab row = a rail (--border) with an --accent underline on the active tab.
@@ -255,35 +282,7 @@
 }
 .who-link:hover { text-decoration: underline; }
 
-/* ---- THE VIDEO (bottom) --------------------------------------------------- */
-.player {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-2xl);
-  border: 1px solid var(--border);
-  aspect-ratio: 16 / 9;
-  background: var(--modal-bg);
-}
-.player-video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  background: var(--modal-bg);
-  display: block;
-}
-/* Poster-state scrim: only present while the overlay is showing. Decorative,
-   so it never intercepts clicks on the native controls once playing. */
-.player::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgb(2 8 23 / 0.10), rgb(2 8 23 / 0.55));
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 160ms ease;
-}
-.player.is-playing::after { opacity: 0; }
+/* ---- CLICK-TO-PLAY OVERLAY (shared by the hero video) --------------------- */
 /* The overlay is a real button: full-bleed click target over the poster. */
 .player-ui {
   position: absolute; inset: 0;
@@ -305,10 +304,6 @@
   font: inherit;
   transition: opacity 160ms ease;
 }
-.player.is-playing .player-ui {
-  opacity: 0;
-  pointer-events: none;
-}
 .play-btn {
   width: 76px; height: 76px;
   border-radius: var(--radius-full);
@@ -329,12 +324,6 @@
   border-radius: var(--radius-full);
   -webkit-backdrop-filter: blur(4px);
           backdrop-filter: blur(4px);
-}
-.player-cap {
-  margin: 20px 0 0;
-  font-size: var(--text-sm);
-  color: var(--foreground-secondary);
-  text-align: center;
 }
 
 /* ---- SOFT CLOSE (dark, reuses the .contact surface family) --------------- */
@@ -393,14 +382,25 @@
         <p class="rh-sub">3 things working, 3 I'd tighten.</p>
       </div>
       <div class="rh-art">
-        <figure class="shot">
+        <figure class="shot" id="reviewPlayer">
           <div class="shot-bar" aria-hidden="true">
             <span class="shot-dots"><i></i><i></i><i></i></span>
             <span class="shot-url">templateson.com</span>
           </div>
-          <div class="shot-canvas">
-            <img src="/assets/r/templateson/home.png" width="2880" height="1800" loading="eager" decoding="async"
-                 alt="The TemplatesOn homepage: a hero reading 'Generate images and PDFs from your automations' above the row of render types.">
+          <div class="shot-canvas hero-canvas">
+            <video class="hero-video" id="reviewVideo" controls playsinline preload="metadata"
+                   poster="/assets/r/templateson/home.png"
+                   aria-label="The full UX review recording of TemplatesOn">
+              <source src="/assets/r/templateson/review.mp4" type="video/mp4">
+              Your browser can't play embedded video.
+              <a href="/assets/r/templateson/review.mp4">Download the recording</a>.
+            </video>
+            <button type="button" class="player-ui" id="reviewPlay" aria-label="Play the review of TemplatesOn">
+              <span class="play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="var(--primary-foreground)"><path d="M6 4.5v15l14-7.5z"/></svg>
+              </span>
+              <span class="player-hint">Watch the full review</span>
+            </button>
           </div>
         </figure>
       </div>
@@ -562,35 +562,7 @@
 </section>
 
 <!-- ==========================================================================
-     5. THE VIDEO (at the bottom) - placeholder player, poster = the site
-     ========================================================================== -->
-<section class="section offer">
-  <div class="wrap wrap-narrow">
-    <div class="section-head">
-      <p class="eyebrow">The recording</p>
-      <h2>Watch the full review</h2>
-    </div>
-    <figure class="player" id="reviewPlayer">
-      <video class="player-video" id="reviewVideo" controls playsinline preload="metadata"
-             poster="/assets/r/templateson/poster.png"
-             aria-label="The full UX review recording">
-        <source src="/assets/r/templateson/review.mp4" type="video/mp4">
-        Your browser can't play embedded video.
-        <a href="/assets/r/templateson/review.mp4">Download the recording</a>.
-      </video>
-      <button type="button" class="player-ui" id="reviewPlay" aria-label="Play the full review">
-        <span class="play-btn" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="var(--primary-foreground)"><path d="M6 4.5v15l14-7.5z"/></svg>
-        </span>
-        <span class="player-hint">Watch the full review</span>
-      </button>
-    </figure>
-    <p class="player-cap">An AI persona actually using your site - real cursor, real scrolling, thinking out loud.</p>
-  </div>
-</section>
-
-<!-- ==========================================================================
-     6. SOFT CLOSE
+     5. SOFT CLOSE
      ========================================================================== -->
 <section class="section close-band">
   <div class="wrap wrap-narrow">
