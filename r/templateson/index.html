@@ -353,10 +353,10 @@
          --modal-text (#FAFAFA) fill, --modal-bg (#1B1B1D) text. This is the
          permanent main action, so it carries the loudest control weight on the
          block - the same white-on-dark primary the .contact surface uses.
-     (3) the LinkedIn button - SECONDARY, the OUTLINE variant (.btn-secondary),
-         transparent fill over the dark band so the surface shows through, with
-         a --modal-text-muted border and --modal-text label. A real button, one
-         clear step below the solid primary.
+     (3) the LinkedIn + Email buttons - SECONDARY, the OUTLINE variant
+         (.btn-secondary), transparent fill over the dark band so the surface
+         shows through, with a --modal-text-muted border and --modal-text label.
+         Two real buttons in a row, one clear step below the solid primary.
      (4) .close-optout   - the quietest element: a fine-print opt-out note, but
          readable (--modal-text-secondary, ~7:1 on --modal-bg), not the near-
          invisible --modal-text-muted (4.0:1) it used before.
@@ -374,11 +374,19 @@
 }
 .close-actions {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+/* The two outline secondaries (LinkedIn + Email) sit in their own row beneath
+   the solid primary, wrapping to stacked on narrow screens. */
+.close-secondary {
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 32px;
 }
 .close-optout {
   margin: 28px auto 0;
@@ -422,9 +430,10 @@
   /* tiles stack to a single column so the title + description stay readable */
   .tile-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .tile-preview { margin-top: 20px; }
-  /* the two closing buttons stack full-width on phones, primary above
-     secondary, matching the .contact action-row mobile treatment. */
-  .close-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+  /* the closing buttons stack full-width on phones, primary above the two
+     secondaries, matching the .contact action-row mobile treatment. */
+  .close-actions { align-items: stretch; gap: 12px; }
+  .close-secondary { flex-direction: column; align-items: stretch; gap: 12px; }
   /* The book-a-call label is long; with the .btn default (white-space:nowrap +
      32px side padding) it exceeds the 288px content column at 320px. On narrow
      screens only, let it wrap and tighten the padding, keeping a 44px min tap
@@ -674,10 +683,15 @@
   <div class="wrap wrap-narrow">
     <p class="close-invite">What do you think? Just reply and tell me what resonated - or what you disagree with.</p>
     <div class="close-actions">
-      <!-- BOOKING LINK (PRIMARY): Ofir's Calendly booking link. Solid white .btn-invert. -->
+      <!-- BOOKING LINK (PRIMARY): Ofir's Calendly booking link. Solid white
+           .btn-invert, on its own row. -->
       <a class="btn btn-invert" href="https://calendly.com/ofir-rushinek/mentorcruise" target="_blank" rel="noopener">Book a 30-minute UX strategy session</a>
-      <!-- LinkedIn (SECONDARY): transparent outline .btn-secondary on the dark band. -->
-      <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      <!-- Two SECONDARY actions in a row beneath: transparent outline
+           .btn-secondary on the dark band (LinkedIn + Email). -->
+      <div class="close-secondary">
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-secondary" href="mailto:ofir.rushinek@gmail.com">Email</a>
+      </div>
     </div>
     <p class="close-optout">If you'd rather not get future reviews, just tell me.</p>
   </div>

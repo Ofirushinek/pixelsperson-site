@@ -731,14 +731,20 @@
     <p class="eyebrow">Next</p>
     <h2>Let's talk</h2>
     <p class="contact-body">A short conversation to see whether there's a real gap worth a Sprint. No pitch deck, no automated report. If there's nothing public to look at yet, a short screen-share works just as well.</p>
-    <!-- Two actions only. Email is PRIMARY (btn-invert, the filled variant on the
-         dark surface); LinkedIn is SECONDARY and uses the same outline vocabulary
-         + arrow + target/rel that the page's other two external links already use
-         (ofirux.com, glimps.design), recoloured for the dark surface in CSS. -->
+    <!-- Booking is PRIMARY (btn-invert, the solid white variant on the dark
+         surface), on its own row. Beneath it, TWO SECONDARY outline buttons
+         (btn-secondary, recoloured for the dark surface in CSS): LinkedIn and
+         Email, both using the same outline vocabulary + external target/rel the
+         page's other external links use (ofirux.com, glimps.design). -->
     <div class="contact-actions">
-      <!-- CONTACT EMAIL: switch to ofir@pixelsperson.com here (href + link text) once the mailbox is activated. -->
-      <a class="btn btn-invert" href="mailto:ofir.rushinek@gmail.com?subject=AI%20Product%20Acceleration%20Sprint">ofir.rushinek@gmail.com</a>
-      <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      <!-- BOOKING LINK (PRIMARY): Calendly booking, the loud solid white action. -->
+      <a class="btn btn-invert" href="https://calendly.com/ofir-rushinek/mentorcruise" target="_blank" rel="noopener">Book a 30-minute UX strategy session</a>
+      <!-- Two SECONDARY actions in a row beneath: LinkedIn + Email.
+           CONTACT EMAIL: switch to ofir@pixelsperson.com here (href) once the mailbox is activated. -->
+      <div class="contact-secondary">
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-secondary" href="mailto:ofir.rushinek@gmail.com?subject=AI%20Product%20Acceleration%20Sprint">Email</a>
+      </div>
     </div>
     <!-- The break is explicit so the sentence always splits at the comma, not
          inside "at a reduced rate". Measured at 14px Inter: line 1 = 353px,
