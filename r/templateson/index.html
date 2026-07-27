@@ -195,6 +195,31 @@
   color: var(--foreground);
 }
 
+/* Per-item notes beneath each screenshot: a repeatable two-line structure
+   ("Why it matters" + "Suggested fix"). Built once, identical per block, so it
+   wires cleanly to generated review data later - never hand-tuned per item.
+   The lead-in label is a quiet bold near-black lead; the line itself is
+   --foreground-secondary, one step down, so the label reads as the signal and
+   the sentence as the detail. Reuses existing type tokens only. */
+.fix-notes {
+  margin-top: 24px;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fix-note {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--foreground-secondary);
+}
+.fix-note-label {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-right: 10px;
+}
+
 /* the screenshot frame reuses the .browser vocabulary (bar + shot). */
 .shot {
   position: relative;
@@ -319,17 +344,68 @@
 }
 .play-btn svg { width: 26px; height: 26px; margin-left: 4px; }
 
-/* ---- SOFT CLOSE (dark, reuses the .contact surface family) --------------- */
+/* ---- CLOSING CTA (dark, reuses the .contact surface family) --------------- */
+/* Deliberate hierarchy, loudest to quietest:
+     (1) .close-invite  - the reply invitation. It is TEXT, not a button, at the
+         largest step on this surface (--text-h1), so it reads as an invitation
+         to reply, not a click target. This is the most prominent element.
+     (2) the book-a-call button - the OUTLINE variant (.btn-secondary), NOT
+         filled white, so a real click target exists but stays subordinate to
+         the invitation. Filled white would out-shout the invite above it.
+     (3) .close-linkedin - a quiet external link.
+     (4) .close-optout   - a muted fine-print note.
+   Zero new tokens. */
 .close-band { background: var(--modal-bg); }
 .close-band .wrap { text-align: center; }
-.close-band p {
+.close-invite {
   font-size: var(--text-h1);
   line-height: 1.5;
   color: var(--modal-text);
   margin: 0 auto;
-  max-width: 24ch;
+  max-width: 26ch;
   font-weight: 500;
 }
+.close-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+.close-linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--modal-text-secondary);
+  text-decoration: none;
+}
+.close-linkedin:hover { color: var(--modal-text); }
+.close-linkedin .arrow { transition: transform var(--dur) var(--ease); }
+.close-linkedin:hover .arrow { transform: translateX(2px); }
+.close-optout {
+  margin: 28px auto 0;
+  font-size: var(--text-caption);
+  line-height: 1.6;
+  color: var(--modal-text-muted);
+}
+
+/* Dark-surface outline button + focus ring - same recolor precedent as
+   .contact .btn-secondary in styles.css (one outline button, recoloured per
+   surface, hover fills --modal-surface-hover instead of solid white so the
+   primary/secondary hierarchy holds). The global focus ring (--ring #020817)
+   is invisible on --modal-bg, so it is re-pointed to --modal-text here, exactly
+   as the .contact surface already does. */
+.close-band .btn-secondary {
+  border-color: var(--modal-text-muted);
+  color: var(--modal-text);
+}
+.close-band .btn-secondary:hover {
+  background: var(--modal-surface-hover);
+  border-color: var(--modal-text);
+  color: var(--modal-text);
+}
+.close-band :focus-visible { outline-color: var(--modal-text); }
 
 /* ---- RESPONSIVE ---------------------------------------------------------- */
 @media (max-width: 860px) {
@@ -345,6 +421,18 @@
   /* tiles stack to a single column so the title + description stay readable */
   .tile-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .tile-preview { margin-top: 20px; }
+  /* The book-a-call label is long; with the .btn default (white-space:nowrap +
+     32px side padding) it exceeds the 288px content column at 320px. On narrow
+     screens only, let it wrap and tighten the padding, keeping a 44px min tap
+     height. Scoped to .close-band so the .btn component is unchanged elsewhere. */
+  .close-band .btn {
+    white-space: normal;
+    height: auto;
+    min-height: 44px;
+    padding: 12px 24px;
+    line-height: 1.3;
+    text-align: center;
+  }
 }
 </style>
 </head>
@@ -373,7 +461,7 @@
           A UX review for TemplatesOn
         </p>
         <h1>I recorded myself <span class="hd-unit">using TemplatesOn.</span><br>Here's what I saw.</h1>
-        <p class="rh-sub">3 things working, 3 I'd tighten.</p>
+        <p class="rh-sub">A first-time visitor's first impression - 3 things working, 3 I'd tighten.</p>
       </div>
       <div class="rh-art">
         <figure class="shot" id="reviewPlayer">
@@ -409,7 +497,7 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">The good</p>
-      <h2>What's working</h2>
+      <h2>Three things I loved</h2>
     </div>
     <div class="tiles" id="winTiles">
       <div class="tile-row" role="tablist" aria-label="What's working">
@@ -493,6 +581,10 @@
           </span>
         </div>
       </figure>
+      <div class="fix-notes">
+        <p class="fix-note"><span class="fix-note-label">Why it matters</span>Someone checking if this fits their budget has to go hunting for the price, and a lot of them just leave instead.</p>
+        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Put the 2-3 plans on the page as cards, free tier first, with prices visible before any click.</p>
+      </div>
     </div>
 
     <!-- Block 2: top nav -->
@@ -517,6 +609,10 @@
           </span>
         </div>
       </figure>
+      <div class="fix-notes">
+        <p class="fix-note"><span class="fix-note-label">Why it matters</span>A packed menu makes a first-time visitor work to find the one thing they actually came for.</p>
+        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Group the nav down to the 4-5 items that matter most and tuck the rest under a single "More" menu.</p>
+      </div>
     </div>
 
     <!-- Block 3: carousel -->
@@ -541,6 +637,10 @@
           </span>
         </div>
       </figure>
+      <div class="fix-notes">
+        <p class="fix-note"><span class="fix-note-label">Why it matters</span>The repeat makes the page feel longer and padded, which quietly lowers trust in the strong parts.</p>
+        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Remove the duplicate card so each feature in the carousel appears exactly once.</p>
+      </div>
     </div>
 
   </div>
@@ -556,7 +656,7 @@
       <h2>Who's behind this</h2>
     </div>
     <div class="who-body">
-      <p>I'm Ofir. 12 years in product design, 5 of them leading design in cybersecurity, most recently building the design function at Axonius from zero. I now work with founders, using AI to move fast.</p>
+      <p>I'm Ofir, a Product Designer with 12+ years helping companies build better digital products.</p>
       <p>This review was recorded by an AI tool I'm building - a persona that actually uses a live site and talks through it like a real user. TemplatesOn is one of the first it's looked at.</p>
       <a class="who-link" href="https://pixelsperson.com">More about how I work <span class="arrow" aria-hidden="true">&rarr;</span></a>
     </div>
@@ -568,7 +668,15 @@
      ========================================================================== -->
 <section class="section close-band">
   <div class="wrap wrap-narrow">
-    <p>If the rest of the notes are useful, or you want to talk any of this through, just reply. No pitch.</p>
+    <p class="close-invite">What do you think? Just reply and tell me what resonated - or what you disagree with.</p>
+    <div class="close-actions">
+      <!-- BOOKING LINK: Ofir will supply a Calendly link. When he does, swap the
+           href below to that URL (placeholder: href="#TODO-BOOKING-LINK"). Until
+           then the actual href is the mailto fallback so the button works today. -->
+      <a class="btn btn-secondary" href="mailto:ofir.rushinek@gmail.com?subject=UX%20strategy%20session">Book a 30-minute UX strategy session</a>
+    </div>
+    <a class="close-linkedin" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    <p class="close-optout">If you'd rather not get future reviews, just tell me.</p>
   </div>
 </section>
 
