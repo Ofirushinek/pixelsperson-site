@@ -348,13 +348,20 @@
 /* Deliberate hierarchy, loudest to quietest:
      (1) .close-invite  - the reply invitation. It is TEXT, not a button, at the
          largest step on this surface (--text-h1), so it reads as an invitation
-         to reply, not a click target. This is the most prominent element.
-     (2) the book-a-call button - the OUTLINE variant (.btn-secondary), NOT
-         filled white, so a real click target exists but stays subordinate to
-         the invitation. Filled white would out-shout the invite above it.
-     (3) .close-linkedin - a quiet external link.
-     (4) .close-optout   - a muted fine-print note.
-   Zero new tokens. */
+         to reply, not a click target.
+     (2) the book-a-call button - PRIMARY, the SOLID variant (.btn-invert):
+         --modal-text (#FAFAFA) fill, --modal-bg (#1B1B1D) text. This is the
+         permanent main action, so it carries the loudest control weight on the
+         block - the same white-on-dark primary the .contact surface uses.
+     (3) the LinkedIn button - SECONDARY, the OUTLINE variant (.btn-secondary),
+         transparent fill over the dark band so the surface shows through, with
+         a --modal-text-muted border and --modal-text label. A real button, one
+         clear step below the solid primary.
+     (4) .close-optout   - the quietest element: a fine-print opt-out note, but
+         readable (--modal-text-secondary, ~7:1 on --modal-bg), not the near-
+         invisible --modal-text-muted (4.0:1) it used before.
+   Zero new tokens - .btn-invert, .btn-secondary and every colour here already
+   exist in styles.css. */
 .close-band { background: var(--modal-bg); }
 .close-band .wrap { text-align: center; }
 .close-invite {
@@ -367,27 +374,21 @@
 }
 .close-actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 16px;
   margin-top: 32px;
 }
-.close-linkedin {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 24px;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--modal-text-secondary);
-  text-decoration: none;
-}
-.close-linkedin:hover { color: var(--modal-text); }
-.close-linkedin .arrow { transition: transform var(--dur) var(--ease); }
-.close-linkedin:hover .arrow { transform: translateX(2px); }
 .close-optout {
   margin: 28px auto 0;
   font-size: var(--text-caption);
   line-height: 1.6;
-  color: var(--modal-text-muted);
+  /* Was --modal-text-muted (#71717A, 4.0:1 on --modal-bg) - legible in theory
+     but visually near-invisible as fine print. Stepped up to
+     --modal-text-secondary (#A1A1AA, ~7:1) so it reads clearly, while still
+     sitting a full step below the buttons as the quietest element. */
+  color: var(--modal-text-secondary);
 }
 
 /* Dark-surface outline button + focus ring - same recolor precedent as
@@ -421,6 +422,9 @@
   /* tiles stack to a single column so the title + description stay readable */
   .tile-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .tile-preview { margin-top: 20px; }
+  /* the two closing buttons stack full-width on phones, primary above
+     secondary, matching the .contact action-row mobile treatment. */
+  .close-actions { flex-direction: column; align-items: stretch; gap: 12px; }
   /* The book-a-call label is long; with the .btn default (white-space:nowrap +
      32px side padding) it exceeds the 288px content column at 320px. On narrow
      screens only, let it wrap and tighten the padding, keeping a 44px min tap
@@ -670,10 +674,11 @@
   <div class="wrap wrap-narrow">
     <p class="close-invite">What do you think? Just reply and tell me what resonated - or what you disagree with.</p>
     <div class="close-actions">
-      <!-- BOOKING LINK: Ofir's Calendly booking link. -->
-      <a class="btn btn-secondary" href="https://calendly.com/ofir-rushinek/mentorcruise" target="_blank" rel="noopener">Book a 30-minute UX strategy session</a>
+      <!-- BOOKING LINK (PRIMARY): Ofir's Calendly booking link. Solid white .btn-invert. -->
+      <a class="btn btn-invert" href="https://calendly.com/ofir-rushinek/mentorcruise" target="_blank" rel="noopener">Book a 30-minute UX strategy session</a>
+      <!-- LinkedIn (SECONDARY): transparent outline .btn-secondary on the dark band. -->
+      <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
     </div>
-    <a class="close-linkedin" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">&rarr;</span></a>
     <p class="close-optout">If you'd rather not get future reviews, just tell me.</p>
   </div>
 </section>
