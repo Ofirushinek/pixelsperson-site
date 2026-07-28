@@ -585,15 +585,37 @@ h2 .line {
   flex: none;
 }
 
-/* Credibility strip */
+/* Credibility strip. Two labelled groups - employers and mentoring platforms -
+   sit side by side and wrap independently. The eyebrow labels keep the two
+   kinds of credential from reading as one undifferentiated pile. */
 .cred-bar {
-  list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 56px;
+  gap: 24px 56px;
   margin: 72px 0 0;
   padding: 24px 0 0;
   border-top: 1px solid var(--border);
+}
+
+.cred-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* .eyebrow carries a 16px bottom margin meant for section heads; here the
+   group's own 12px gap sets the label-to-names distance instead. */
+.cred-label {
+  margin: 0;
+}
+
+.cred-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0;
+  padding: 0;
 }
 
 .cred-bar li {
