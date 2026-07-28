@@ -586,14 +586,25 @@ h2 .line {
 }
 
 /* Credibility strip. Two labelled groups - employers and mentoring platforms -
-   sit side by side and wrap independently. The eyebrow labels keep the two
-   kinds of credential from reading as one undifferentiated pile. */
+   anchored to opposite ends of a full-width row: "Worked at" hugs the left
+   edge, "Mentoring at" hugs the right, and the negative space falls in the
+   MIDDLE so the strip reads as one balanced bar spanning the page rather than
+   a clump on the left. The full-width border-top rule ties the two clusters
+   together, so the calm middle gap reads as intentional letterhead spacing,
+   not as two disconnected islands. justify-content:space-between does the
+   anchoring; the 56px column gap is only the floor for the moment before they
+   wrap. When they wrap (below ~620px) each group is alone on its line and
+   space-between leaves it left-aligned, so the two stack cleanly. The eyebrow
+   labels keep the two kinds of credential from reading as one pile.
+   Padding-top 32px (was 24) and the wider name gaps below give the strip air
+   so it does not read as packed text under a title. */
 .cred-bar {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 24px 56px;
   margin: 72px 0 0;
-  padding: 24px 0 0;
+  padding: 32px 0 0;
   border-top: 1px solid var(--border);
 }
 
@@ -613,7 +624,7 @@ h2 .line {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 32px;
+  gap: 12px 40px;
   margin: 0;
   padding: 0;
 }
