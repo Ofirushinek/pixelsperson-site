@@ -230,28 +230,6 @@ img { display: block; max-width: 100%; height: auto; }
   margin: 0 0 16px;
 }
 
-/* Hero variant: the eyebrow becomes a bordered chip so the AI framing has a
-   visual anchor before the headline even starts. */
-.eyebrow-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 30px;
-  padding: 0 14px 0 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  background: var(--card);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 28px;
-}
-
-.chip-glyph {
-  width: 11px;
-  height: 11px;
-  color: var(--accent);
-  flex: none;
-}
-
 /* Glimps .badge-new pattern: rounded-full pill */
 .badge {
   display: inline-flex;
@@ -595,11 +573,10 @@ h2 .line {
 .btn .arrow { transition: transform var(--dur) var(--ease); }
 .btn:hover .arrow { transform: translateX(2px); }
 
-/* Flat leading glyph inside a button (LinkedIn, mail). Same sizing approach as
-   .chip-glyph: a fixed square just under the type size, flex:none so it never
-   distorts, colour inherited via currentColor so it always matches the label.
-   13px is chip-glyph's 11/12 ratio applied to the 14px button label, i.e. the
-   label's cap band. The .btn's own 8px gap spaces it from the label - no extra
+/* Flat leading glyph inside a button (LinkedIn, mail). A fixed square just
+   under the type size, flex:none so it never distorts, colour inherited via
+   currentColor so it always matches the label. 13px is an 11/12 ratio applied
+   to the 14px button label, i.e. the label's cap band. The .btn's own 8px gap spaces it from the label - no extra
    margin. Used by the two dark-close secondary buttons on both the main and the
    templateson pages, so it lives here rather than in either page's scoped CSS. */
 .btn-ico {
