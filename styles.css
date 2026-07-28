@@ -595,6 +595,19 @@ h2 .line {
 .btn .arrow { transition: transform var(--dur) var(--ease); }
 .btn:hover .arrow { transform: translateX(2px); }
 
+/* Flat leading glyph inside a button (LinkedIn, mail). Same sizing approach as
+   .chip-glyph: a fixed square just under the type size, flex:none so it never
+   distorts, colour inherited via currentColor so it always matches the label.
+   13px is chip-glyph's 11/12 ratio applied to the 14px button label, i.e. the
+   label's cap band. The .btn's own 8px gap spaces it from the label - no extra
+   margin. Used by the two dark-close secondary buttons on both the main and the
+   templateson pages, so it lives here rather than in either page's scoped CSS. */
+.btn-ico {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
 /* Credibility strip */
 .cred-bar {
   list-style: none;
@@ -1947,14 +1960,25 @@ h2 .line {
 .contact .btn { padding: 0 40px; }
 
 /* Column: the solid white primary (booking) sits on its own row above a row of
-   two outline secondaries (LinkedIn + Email). */
-.contact-actions { justify-content: center; flex-direction: column; }
+   two outline secondaries (LinkedIn + Email). The column is fit-content and
+   centred, and its children stretch to its width, so the primary and the
+   secondary pair share ONE width and the whole block is centred as a group.
+   The secondary row is a 2-column equal grid: the two outline buttons are
+   always the same width as each other and, stretched to the shared width, sit
+   at roughly the primary's width beneath it. */
+.contact-actions {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
 .contact-secondary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
 }
 
 /* The outline button on the dark close. Same component as .btn-secondary, only
@@ -2292,10 +2316,10 @@ h2 .line {
   .contact h2 { font-size: var(--text-h1); }
   .contact-body { font-size: var(--text-body); }
   /* Full-width actions stacked: solid primary above the two outline secondaries,
-     which also drop to full-width. Tighter gap: 24px between stacked full-width
-     buttons reads as unrelated blocks. */
-  .contact-actions { flex-direction: column; align-items: stretch; gap: 12px; }
-  .contact-secondary { flex-direction: column; align-items: stretch; gap: 12px; }
+     which also drop to a single full-width column. width:auto lets the block
+     fill the padded column instead of shrinking to content. */
+  .contact-actions { align-items: stretch; gap: 12px; width: auto; }
+  .contact-secondary { grid-template-columns: 1fr; gap: 12px; }
   /* The booking label is long; let the dark-close buttons wrap on phones instead
      of overflowing the padded column, keeping a 44px min tap height. */
   .contact .btn {
