@@ -1106,19 +1106,20 @@ h2 .line {
   margin-top: 28px;
 }
 
-/* Capped narrower than the 1120px container so the two columns of names sit
-   near the spine instead of drifting to the page edges. */
-.ctl {
+/* The timeline: a single centred spine with cards alternating left and right.
+   Rich cards (date, role, company, a line of detail) in the page's card
+   language - white fill, 1px --border, 16px radius, shadow-sm to md on hover.
+   Zero new tokens. Collapses to a left rail below 720px. */
+.tl {
   list-style: none;
   position: relative;
-  max-width: 760px;
+  max-width: var(--container);
   margin: 0 auto;
   padding: 8px 0;
 }
 
-/* The spine: 1px down the exact centre, faded at both ends so it does not stop
-   dead - the terminated-line grammar the rest of the page already uses. */
-.ctl::before {
+/* The spine down the exact centre, faded at both ends. */
+.tl::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -1127,56 +1128,129 @@ h2 .line {
   transform: translateX(-50%);
   width: 1px;
   background: linear-gradient(to bottom,
-    transparent 0%, var(--line) 10%, var(--line) 90%, transparent 100%);
+    transparent 0%, var(--line) 6%, var(--line) 94%, transparent 100%);
 }
 
-/* Each entry is a two-column row; the name sits in one half and is pulled
-   toward the spine. Rows are single-line, so the vertical pitch stays tight. */
-.ctl-item {
+/* Two-column row; the card fills one half. The 72px gutter splits to 36px
+   either side of the spine. */
+.tl-item {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-bottom: 22px;
+  column-gap: 72px;
+  align-items: center;
+  margin-bottom: 28px;
 }
 
-.ctl-item:last-child { margin-bottom: 0; }
+.tl-item:last-child { margin-bottom: 0; }
 
-/* Node dot, centred on the spine and on the name's optical middle. 9px with a
-   3px --background halo so the spine does not run visibly through it. */
-.ctl-item::before {
+/* Node on the spine, centred on the card. 13px with a 4px --background halo so
+   the spine reads as passing behind it. */
+.tl-item::before {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 9px;
-  height: 9px;
+  width: 13px;
+  height: 13px;
   border-radius: var(--radius-full);
   background: var(--line-strong);
-  box-shadow: 0 0 0 3px var(--background);
+  box-shadow: 0 0 0 4px var(--background);
+  z-index: 1;
 }
 
-/* The wordmark: monochrome near-black, one weight, tightened tracking so a
-   plain company name reads as a set mark, not as body text. Left column by
-   default, right-aligned toward the spine. */
-.ctl-name {
+/* The current, cybersecurity role gets the one accent node - the emphasis
+   carried in hierarchy, not in adjectives. */
+.tl-cyber::before { background: var(--accent); }
+
+.tl-card {
+  position: relative;
   grid-column: 1;
-  justify-self: end;
-  text-align: right;
-  padding-right: 32px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 22px 24px;
+  transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.tl-right .tl-card { grid-column: 2; }
+
+.tl-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--line);
+}
+
+/* Hairline connector from the card to the spine (36px = half the 72px gutter). */
+.tl-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  height: 1px;
+  background: var(--border);
+}
+
+.tl-left .tl-card::after { right: -36px; }
+.tl-right .tl-card::after { left: -36px; }
+
+.tl-date {
+  display: block;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--foreground-secondary);
+  margin-bottom: 10px;
+}
+
+.tl-headrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 4px;
+}
+
+.tl-role {
   font-size: var(--text-h2);
   font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
   color: var(--foreground);
+  margin: 0;
 }
 
-.ctl-right .ctl-name {
-  grid-column: 2;
-  justify-self: start;
-  text-align: left;
-  padding-right: 0;
-  padding-left: 32px;
+/* Accent-dot tag (hub-badge pattern): the dot is decorative, so it carries the
+   accent without owing a text-contrast ratio. */
+.tl-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.tl-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+}
+
+.tl-company {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--foreground-secondary);
+  margin-bottom: 12px;
+}
+
+.tl-desc {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--foreground-secondary);
+  margin: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -2124,20 +2198,15 @@ h2 .line {
   .door-art svg { width: 104px; }
   .stage { padding: 36px 24px 28px; }
 
-  /* Background timeline: the centred spine collapses to a single left rail and
-     every name left-aligns to it. */
-  .ctl { max-width: none; padding: 4px 0; }
-  .ctl::before { left: 4px; transform: none; }
-  .ctl-item { grid-template-columns: minmax(0, 1fr); margin-bottom: 18px; }
-  .ctl-name,
-  .ctl-right .ctl-name {
-    grid-column: 1;
-    justify-self: start;
-    text-align: left;
-    padding: 0 0 0 28px;
-    font-size: var(--text-h3);
-  }
-  .ctl-item::before { left: 4px; }
+  /* Career timeline: the centred spine becomes a single left rail; every card
+     sits to its right, full width. */
+  .tl { max-width: none; padding: 4px 0; }
+  .tl::before { left: 7px; transform: none; }
+  .tl-item { grid-template-columns: minmax(0, 1fr); column-gap: 0; align-items: start; margin-bottom: 16px; }
+  .tl-card, .tl-right .tl-card { grid-column: 1; margin-left: 34px; }
+  .tl-card::after { display: none; }
+  .tl-item::before { left: 7px; top: 30px; transform: translate(-50%, 0); }
+  .tl-role { font-size: var(--text-h3); }
   .bg-head .btn { width: 100%; }
 
   .note { padding: 20px 22px; font-size: var(--text-body); }
