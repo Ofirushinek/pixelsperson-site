@@ -483,7 +483,7 @@
             <span class="shot-url">templateson.com</span>
           </div>
           <div class="shot-canvas hero-canvas">
-            <video class="hero-video" id="reviewVideo" controls playsinline preload="metadata"
+            <video class="hero-video" id="reviewVideo" playsinline preload="metadata"
                    poster="/assets/r/templateson/home.png"
                    aria-label="The full UX review recording of TemplatesOn">
               <source src="/assets/r/templateson/review.mp4" type="video/mp4">
@@ -699,9 +699,12 @@
 
 </main>
 
-<!-- Review player: click-to-play. The overlay hands off to native controls
-     on first play; audio is on (not muted). No new tokens, no new markup
-     vocabulary - the overlay is the same .player-ui composition. -->
+<!-- Review player: click-to-play. At rest the video has NO native controls -
+     only the poster (the maker's homepage) + the centered custom play button
+     show. On first play the overlay hands off to native controls (scrubber,
+     volume, fullscreen) so the viewer can drive playback; audio is on (not
+     muted). No new tokens, no new markup vocabulary - the overlay is the same
+     .player-ui composition. -->
 <script>
 (function () {
   var wrap = document.getElementById("reviewPlayer");
@@ -709,13 +712,21 @@
   var btn = document.getElementById("reviewPlay");
   if (!wrap || !video || !btn) return;
 
+  // Enable the native control bar only once playback has begun, so the at-rest
+  // state stays poster + custom play button with no bottom control strip.
+  function enableControls() { video.controls = true; }
+
   function start() {
     wrap.classList.add("is-playing");
+    enableControls();
     var p = video.play();
     if (p && typeof p.catch === "function") { p.catch(function () {}); }
   }
   btn.addEventListener("click", start);
-  video.addEventListener("play", function () { wrap.classList.add("is-playing"); });
+  video.addEventListener("play", function () {
+    wrap.classList.add("is-playing");
+    enableControls();
+  });
 })();
 </script>
 
