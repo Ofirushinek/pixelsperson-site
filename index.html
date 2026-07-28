@@ -227,9 +227,9 @@
          inline credentials cannot hold together in one column (492px in round
          4, 544px after round 6 widened the copy - still not enough). -->
     <ul class="cred-bar">
-      <li><strong>Axonius</strong><span>Director of Product Design</span><span class="cred-meta">Cybersecurity &middot; 2021-2026</span></li>
-      <li><strong>Salesforce</strong><span>Senior Manager, UX/UI</span><span class="cred-meta">2020-2021</span></li>
-      <li><strong>ClickSoftware</strong><span>UX Lead</span><span class="cred-meta">2017-2020</span></li>
+      <li><strong>Axonius</strong></li>
+      <li><strong>Salesforce</strong></li>
+      <li><strong>ClickSoftware</strong></li>
     </ul>
   </div>
 </section>
@@ -399,84 +399,24 @@
      ========================================================================== -->
 <section class="section background">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head bg-head">
       <p class="eyebrow">Background</p>
       <h2><span class="line">Twelve years in product design.</span> <span class="line">Five of them inside cybersecurity.</span></h2>
+      <p class="section-sub">Product design, UX, and design leadership, from enterprise platforms to cybersecurity. The site itself is built with AI.</p>
+      <a class="btn btn-secondary bg-head-btn" href="https://ofirux.com" target="_blank" rel="noopener noreferrer">ofirux.com <span class="arrow" aria-hidden="true">&rarr;</span></a>
     </div>
 
-    <!-- ROUND 4 - DENSITY AND RELATIONSHIP.
-         Cut: the three-stat row (it restated the h2 word for word, and its
-         36px numerals made this section rhyme with Proof and flatten it), the
-         section-sub (it restated the timeline directly below it), the second
-         Axonius title row, one credential line, and the portfolio block's own
-         eyebrow and rule.
-         Added: one eyebrow per column and a hairline between them, so the two
-         halves read as one statement in two parts rather than as two blocks
-         that happen to sit side by side. -->
-    <div class="bg-grid">
-
-      <!-- The spine-with-dots grammar is already the page's language (agent
-           diagram, mobile sprint rail). Reused here rather than inventing a
-           timeline style. Axonius is the only entry given a panel and an
-           accent dot: that is the "lead harder on cybersecurity" ask,
-           expressed in hierarchy instead of in adjectives. -->
-      <div class="bg-col">
-        <p class="eyebrow">Where I've done it</p>
-        <ol class="timeline">
-
-          <li class="role role-lead">
-            <div class="role-head">
-              <h3>Axonius</h3>
-              <span class="badge badge-dot">Cybersecurity</span>
-            </div>
-            <p class="role-title">Director of Product Design <span class="role-dates">Feb 2021 - Apr 2026</span></p>
-            <p class="role-body">Built the product design function from zero, joining as Head of Product Design. Led the design team and the front-end team.</p>
-          </li>
-
-          <!-- Detail descends down the timeline: two lines on Axonius, one on
-               Salesforce and ClickSoftware, none on Vizrt. That gradient is
-               what makes the shortest entry read as deliberate rather than as
-               a row that lost its copy. -->
-          <li class="role">
-            <h3>Salesforce</h3>
-            <p class="role-title">Senior Manager, UX/UI <span class="role-dates">Jan 2020 - Feb 2021</span></p>
-            <p class="role-body">Led the Israeli Service Cloud design team.</p>
-          </li>
-
-          <li class="role">
-            <h3>ClickSoftware</h3>
-            <p class="role-title">UX Lead <span class="role-dates">Jul 2017 - Jan 2020</span></p>
-            <p class="role-body">Established the UX and UI practice from scratch.</p>
-          </li>
-
-          <li class="role">
-            <h3>Vizrt</h3>
-            <p class="role-title">UX Designer <span class="role-dates">Nov 2015 - Jul 2017</span></p>
-          </li>
-
-        </ol>
-      </div>
-
-      <!-- Second proof asset. Glimps proves the agent system and a shipped
-           product; this proves twelve years of craft. Deliberately a link,
-           not a screenshot - see the styles.css note. -->
-      <aside class="bg-col bg-aside">
-        <p class="eyebrow">What came out of it</p>
-
-        <div class="portfolio">
-          <h3>Twelve years of work, in one place</h3>
-          <p>Product design, UX, and design leadership, from enterprise platforms to cybersecurity. The site itself is built with AI.</p>
-          <a class="btn btn-secondary" href="https://ofirux.com" target="_blank" rel="noopener noreferrer">ofirux.com <span class="arrow" aria-hidden="true">&rarr;</span></a>
-        </div>
-
-        <!-- Same .cred-bar component as the hero, stacked instead of inline. -->
-        <ul class="cred-bar cred-bar-stack">
-          <li><strong>UX Lecturer</strong><span>Netcraft Academy, 2021-2023</span></li>
-          <li><strong>Mentor</strong><span>ADPList and MentorCruise, since 2021</span></li>
-        </ul>
-      </aside>
-
-    </div>
+    <!-- Centred career timeline: one spine down the middle, entries alternate
+         left/right, each reduced to a single monochrome wordmark (no role
+         titles, no dates - per Ofir). Collapses to a left rail below 720px. -->
+    <ol class="ctl">
+      <li class="ctl-item ctl-left"><span class="ctl-name">Axonius</span></li>
+      <li class="ctl-item ctl-right"><span class="ctl-name">Salesforce</span></li>
+      <li class="ctl-item ctl-left"><span class="ctl-name">ClickSoftware</span></li>
+      <li class="ctl-item ctl-right"><span class="ctl-name">Vizrt</span></li>
+      <li class="ctl-item ctl-left"><span class="ctl-name">UX Lecturer</span></li>
+      <li class="ctl-item ctl-right"><span class="ctl-name">Mentor</span></li>
+    </ol>
   </div>
 </section>
 

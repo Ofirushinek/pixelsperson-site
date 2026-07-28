@@ -620,14 +620,6 @@ h2 .line {
   color: var(--foreground-secondary);
 }
 
-/* Stacked modifier, used by the Background section's "also" list. Same
-   component, different axis - no second credential style on the page. */
-.cred-bar-stack {
-  flex-direction: column;
-  gap: 16px;
-  margin: 32px 0 0;
-}
-
 /* --------------------------------------------------------------------------
    5.5 THE HERO GRAPHIC (added round 4)
 
@@ -1087,213 +1079,104 @@ h2 .line {
 }
 
 /* --------------------------------------------------------------------------
-   6.5 BACKGROUND (added round 3, cut back round 4)
-   The judgment half of the offer. Two parts: a career timeline (the
-   substance) and the portfolio it produced.
+   6.5 BACKGROUND - centred career timeline (rebuilt session 40)
+   Ofir cut the two-column "where I've done it / what came out of it" layout.
+   The section is now a centred header (title + one-line summary + the ofirux
+   link) over a single spine down the middle, entries alternating left/right.
+   Each entry is reduced to one monochrome wordmark - no role titles, no dates -
+   so the eye reads a career at a glance rather than a resume. Condensed on
+   purpose: the ofirux.com reference had too much air.
 
-   ZERO new visual vocabulary. It reuses, in order:
-     the spine + dot   from the agent diagram / mobile sprint rail
-     the card family   (white, 1px --border, 16px radius)
-     .badge            with the .hub-badge accent-dot treatment
-     .btn-secondary    the outline button
-     .cred-bar         stacked instead of inline
-
-   ROUND 4, (a) DENSITY. Ofir: "It's a bit too crowded compared to the rest of
-   the sections. I want it to be more minimalistic."
-     - The three-stat row is gone. It restated the h2 directly above it word
-       for word ("Twelve years... Five of them inside cybersecurity"), and a
-       second row of 36px numerals made this section rhyme with Proof, which
-       flattened the one place those numerals actually have to land.
-     - The section-sub is gone: it restated the timeline immediately below it.
-     - The second Axonius title row is gone; the promotion is now a clause in
-       the role body, so every entry has exactly one title line.
-     - One credential line is gone (see the .cred-bar-stack note in the HTML).
-
-   ROUND 4, (b) RELATIONSHIP. Ofir: "It's not that explainable or clear that
-   the left side is my path and the right side is the expansion and the focus
-   of my portfolio." Fixed by naming both halves rather than by separating
-   them: one eyebrow per column ("Where I've done it" / "What came out of
-   it"), plus a hairline in the gutter that binds them into a single object.
-   Naming was the right lever because the two genuinely are one statement;
-   splitting them into two sections would have made the page longer to say
-   less.
-
-   ON THE PORTFOLIO BEING A LINK, NOT A SCREENSHOT: ofirux.com is a dark
-   full-bleed photographic hero on a yellow accent. Framed next to the Glimps
-   capture it would put a second browser window and a third accent color on
-   the page, and it would pull attention off the one screenshot that has to
-   land. The link does the job; the visual would cost more than it returns.
+   Zero new tokens. Reuses the spine + dot grammar (agent diagram / sprint
+   rail), --text-h2 at the page's -0.02em display tracking, the line-work
+   tokens, and .section-sub / .btn-secondary for the header. Collapses to a
+   left rail below 720px (see the media block).
    -------------------------------------------------------------------------- */
-.bg-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: 64px;
-  align-items: stretch;
+.bg-head {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
-/* The hairline that makes the two columns one object. Three deliberate
-   choices in it:
-     - it sits in the middle of the 64px gutter, not on the column edge, so it
-       reads as a division of one block rather than as the border of the
-       right-hand one;
-     - align-items:stretch runs it the full height of the taller column, so it
-       is a division of the section rather than an outline of the shorter
-       column's content;
-     - it fades out at the base on exactly the same gradient the timeline
-       spine two columns to its left already uses, so the two vertical lines
-       in this section terminate the same way instead of one stopping dead. */
-.bg-aside {
-  position: relative;
-  padding-left: 32px;
-  margin-left: -32px;
+.bg-head .section-sub {
+  margin: 16px auto 0;
 }
 
-.bg-aside::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom,
-    var(--border) 0%, var(--border) 76%, transparent 100%);
+.bg-head-btn {
+  margin-top: 28px;
 }
 
-.bg-col > .eyebrow { margin-bottom: 20px; }
-
-/* --- the timeline --- */
-.timeline {
+/* Capped narrower than the 1120px container so the two columns of names sit
+   near the spine instead of drifting to the page edges. */
+.ctl {
   list-style: none;
   position: relative;
-  margin: 0;
-  padding: 0 0 0 36px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 0;
 }
 
-/* The spine. Starts at the centre of the Axonius accent dot (34.5px: the dot
-   top is derived at 31px below, plus half of its 7px) so the line reads as
-   emerging from the current role, and fades out at the base so it runs back
-   in time rather than stopping at an arbitrary point. Same grammar as the
-   agent diagram's rail. */
-.timeline::before {
+/* The spine: 1px down the exact centre, faded at both ends so it does not stop
+   dead - the terminated-line grammar the rest of the page already uses. */
+.ctl::before {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 34.5px;
+  left: 50%;
+  top: 0;
   bottom: 0;
+  transform: translateX(-50%);
   width: 1px;
   background: linear-gradient(to bottom,
-    var(--line) 0%, var(--line) 78%, transparent 100%);
+    transparent 0%, var(--line) 10%, var(--line) 90%, transparent 100%);
 }
 
-.role {
+/* Each entry is a two-column row; the name sits in one half and is pulled
+   toward the spine. Rows are single-line, so the vertical pitch stays tight. */
+.ctl-item {
   position: relative;
-  margin-bottom: 36px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 22px;
 }
 
-.role:last-child { margin-bottom: 0; }
+.ctl-item:last-child { margin-bottom: 0; }
 
-/* Dot on the spine. 7px, the same size the agent-diagram nodes use.
-   left: -33.5px = spine at 6px, minus half the dot, minus the 36px padding.
-   Vertical centre is derived, not eyeballed: the company name is 16px at
-   line-height 1.2 (19.2px box), so its optical centre is 9.6px down and the
-   7px dot starts at 6px. */
-.role::before {
+/* Node dot, centred on the spine and on the name's optical middle. 9px with a
+   3px --background halo so the spine does not run visibly through it. */
+.ctl-item::before {
   content: "";
   position: absolute;
-  left: -33.5px;
-  top: 6px;
-  width: 7px;
-  height: 7px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 9px;
+  height: 9px;
   border-radius: var(--radius-full);
   background: var(--line-strong);
+  box-shadow: 0 0 0 3px var(--background);
 }
 
-/* Axonius: the only entry given a panel and the only accent dot. This is
-   where the cybersecurity leadership sits, so it gets the weight.
-
-   Round 4, Ofir: "the weight jump is abrupt rather than deliberate." The
-   shadow was the abrupt part - it lifted this entry onto a different plane
-   from three entries that are plain text. Dropping it turns a floating card
-   into a panel: still unmistakably the emphasised entry (fill, border, 20px
-   name, badge, accent dot) but sitting in the same plane as the rest.
-   Padding came down 26/28 -> 22/24 in the same pass. */
-.role-lead {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 22px 24px;
-}
-
-/* Panel: 22px padding, then half of the 25.2px .role-head row (the badge is
-   taller than the 20px h3 and sets that row's height), minus half the dot. */
-.role-lead::before {
-  background: var(--accent);
-  top: 31px;
-}
-
-.role-head {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 12px;
-  margin-bottom: 12px;
-}
-
-.role h3 {
-  font-size: var(--text-h3);
-  margin: 0 0 6px;
-}
-
-.role-lead h3 {
+/* The wordmark: monochrome near-black, one weight, tightened tracking so a
+   plain company name reads as a set mark, not as body text. Left column by
+   default, right-aligned toward the spine. */
+.ctl-name {
+  grid-column: 1;
+  justify-self: end;
+  text-align: right;
+  padding-right: 32px;
   font-size: var(--text-h2);
-  margin: 0;
-}
-
-.role-title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 12px;
-  font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   color: var(--foreground);
-  margin: 0 0 4px;
 }
 
-.role-dates {
-  font-size: var(--text-caption);
-  font-weight: 400;
-  color: var(--foreground-secondary);
-  white-space: nowrap;
-}
-
-.role-body {
-  font-size: var(--text-sm);
-  line-height: 1.6;
-  color: var(--foreground);
-  margin: 8px 0 0;
-}
-
-.role-lead .role-body {
-  font-size: var(--text-body);
-  margin-top: 14px;
-}
-
-/* --- aside: portfolio + the record that isn't a job ---
-   Round 4: the portfolio block used to carry its own eyebrow ("Portfolio")
-   and a 2px --foreground top rule. With the column eyebrow above it, the
-   eyebrow was a duplicate label and the rule was a second "this is
-   significant" marker inside a column that already has one. Both removed;
-   the column hairline now does the structural job. */
-.portfolio h3 {
-  font-size: var(--text-h2);
-  margin: 0 0 12px;
-}
-
-.portfolio p {
-  font-size: var(--text-body);
-  color: var(--foreground);
-  margin: 0 0 24px;
+.ctl-right .ctl-name {
+  grid-column: 2;
+  justify-self: start;
+  text-align: left;
+  padding-right: 0;
+  padding-left: 32px;
 }
 
 /* --------------------------------------------------------------------------
@@ -2160,21 +2043,6 @@ h2 .line {
   .pillar-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
   .pillar-art { padding: 28px; }
 
-  /* Background: timeline first, then the aside. The timeline is the substance,
-     so it keeps the top of the section when the columns stack. The gutter
-     hairline becomes a horizontal rule, which is the same "one object, two
-     parts" signal turned through ninety degrees. */
-  .bg-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-
-  .bg-aside {
-    border-top: 1px solid var(--border);
-    padding-left: 0;
-    margin-left: 0;
-    padding-top: 40px;
-  }
-
-  .bg-aside::before { display: none; }
-
   /* Sprint collapses to one column but stays a sequence: the rail turns
      vertical, the chevrons point down. */
   .stage-grid {
@@ -2245,7 +2113,7 @@ h2 .line {
 
   .hero { padding: 80px 0 64px; }
   .hero-title { line-height: 1.14; }
-  .cred-bar:not(.cred-bar-stack) { margin-top: 48px; gap: 16px 32px; }
+  .cred-bar { margin-top: 48px; gap: 16px 32px; }
 
   .door-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .door-grid .door:last-child { grid-column: auto; }
@@ -2256,22 +2124,21 @@ h2 .line {
   .door-art svg { width: 104px; }
   .stage { padding: 36px 24px 28px; }
 
-  .timeline { padding-left: 28px; }
-  .timeline::before { left: 5px; top: 32.5px; }
-  .role::before { left: -26.5px; }
-  .role { margin-bottom: 28px; }
-  .role-lead { padding: 20px; }
-  .role-lead h3 { font-size: var(--text-h3); }
-  /* 20px padding + half the 25.2px badge-height role-head row, minus half the dot */
-  .role-lead::before { top: 29px; }
-  .role-lead .role-body { font-size: var(--text-sm); }
-  /* "Director of Product Design" plus its dates no longer fit on one line at
-     phone widths, so the title stacks its dates deterministically rather than
-     leaving it to flex-wrap. */
-  .role-lead .role-title { flex-direction: column; align-items: flex-start; gap: 2px; }
-  .portfolio h3 { font-size: var(--text-h3); }
-  .portfolio p { font-size: var(--text-sm); }
-  .portfolio .btn { width: 100%; }
+  /* Background timeline: the centred spine collapses to a single left rail and
+     every name left-aligns to it. */
+  .ctl { max-width: none; padding: 4px 0; }
+  .ctl::before { left: 4px; transform: none; }
+  .ctl-item { grid-template-columns: minmax(0, 1fr); margin-bottom: 18px; }
+  .ctl-name,
+  .ctl-right .ctl-name {
+    grid-column: 1;
+    justify-self: start;
+    text-align: left;
+    padding: 0 0 0 28px;
+    font-size: var(--text-h3);
+  }
+  .ctl-item::before { left: 4px; }
+  .bg-head .btn { width: 100%; }
 
   .note { padding: 20px 22px; font-size: var(--text-body); }
 
