@@ -90,8 +90,8 @@
 /* HERO VIDEO: the maker's own homepage is the poster (still framed in the
    templateson.com browser chrome), and pressing play reveals the review.
    Reuses the .shot browser frame + the click-to-play .player-ui composition
-   below - no new tokens. home.png (2880x1800) and review.mp4 (1440x900) share
-   the same 16:10 ratio, so cover never crops the poster. */
+   below - no new tokens. home.png (2880x1800) and session-voiced.mp4 (1440x900)
+   share the same 16:10 ratio, so cover never crops the poster. */
 .hero-canvas { aspect-ratio: 16 / 10; background: var(--modal-bg); }
 .hero-video {
   position: absolute; inset: 0;
@@ -183,41 +183,15 @@
   flex: none;
   line-height: 1.2;
 }
-.fix-copy h3 {
-  font-size: var(--text-h1);
-  margin: 0 0 8px;
-  line-height: 1.25;
-}
+/* Each tighten block renders the reviewer's single paragraph next to its number,
+   then the annotated screenshot beneath. One paragraph per item - no secondary
+   "why/fix" notes - so the fix-copy carries just the review sentence at
+   --text-body-lg. Reuses existing type tokens only. */
 .fix-copy p {
   margin: 0;
   font-size: var(--text-body-lg);
   line-height: 1.6;
   color: var(--foreground);
-}
-
-/* Per-item notes beneath each screenshot: a repeatable two-line structure
-   ("Why it matters" + "Suggested fix"). Built once, identical per block, so it
-   wires cleanly to generated review data later - never hand-tuned per item.
-   The lead-in label is a quiet bold near-black lead; the line itself is
-   --foreground-secondary, one step down, so the label reads as the signal and
-   the sentence as the detail. Reuses existing type tokens only. */
-.fix-notes {
-  margin-top: 24px;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.fix-note {
-  margin: 0;
-  font-size: var(--text-body);
-  line-height: 1.6;
-  color: var(--foreground-secondary);
-}
-.fix-note-label {
-  font-weight: 600;
-  color: var(--foreground);
-  margin-right: 10px;
 }
 
 /* the screenshot frame reuses the .browser vocabulary (bar + shot). */
@@ -572,13 +546,12 @@
       <h2>3 things I'd tighten</h2>
     </div>
 
-    <!-- Block 1: pricing -->
+    <!-- Block 1: hero subhead -->
     <div class="fix">
       <div class="fix-head">
         <span class="fix-num">01</span>
         <div class="fix-copy">
-          <h3>Your pricing hides the paid tiers.</h3>
-          <p>The page shows a free tier but the paid plans sit behind a click. Someone deciding if this fits their budget has to go hunting. Put the plans on the page, side by side.</p>
+          <p>The hero subhead does good work, but it stacks four tools in a row and my brain glazes a bit - try leading with the pain-point use case first, then drop the integrations as proof: 'Auto-generate invoices and social images from Zapier, n8n…'</p>
         </div>
       </div>
       <figure class="shot">
@@ -587,26 +560,21 @@
           <span class="shot-url">templateson.com</span>
         </div>
         <div class="shot-canvas">
-          <img src="/assets/r/templateson/pricing.png" width="1680" height="720" loading="lazy" decoding="async"
-               alt="The TemplatesOn pricing section, showing only the free plan with a 'See pricing' button for the paid tiers.">
-          <span class="annot" style="left:40%;top:66%;width:20%;height:16%;">
-            <span class="annot-label">Paid plans behind a click</span>
+          <img src="/assets/r/templateson/fix-subhead.png" width="2400" height="690" loading="lazy" decoding="async"
+               alt="The TemplatesOn hero, with the subhead listing Zapier, n8n, Make and a single API call in one line.">
+          <span class="annot" style="left:4.2%;top:46.8%;width:48%;height:23%;">
+            <span class="annot-label">Subhead stacks four tools</span>
           </span>
         </div>
       </figure>
-      <div class="fix-notes">
-        <p class="fix-note"><span class="fix-note-label">Why it matters</span>Someone checking if this fits their budget has to go hunting for the price, and a lot of them just leave instead.</p>
-        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Put the 2-3 plans on the page as cards, free tier first, with prices visible before any click.</p>
-      </div>
     </div>
 
-    <!-- Block 2: top nav -->
+    <!-- Block 2: accent pill -->
     <div class="fix">
       <div class="fix-head">
         <span class="fix-num">02</span>
         <div class="fix-copy">
-          <h3>The top nav is carrying 20+ items.</h3>
-          <p>The menu tries to expose everything at once, so nothing stands out. Group it down to the 4-5 things a first-time visitor actually needs.</p>
+          <p>That cyan accent pill on every section heading ('BULK RENDERING', 'QR, BARCODES…') - it's working overtime and starting to feel like wallpaper. Pick one or two hero moments to badge, let the rest breathe without the highlighter.</p>
         </div>
       </div>
       <figure class="shot">
@@ -615,26 +583,21 @@
           <span class="shot-url">templateson.com</span>
         </div>
         <div class="shot-canvas">
-          <img src="/assets/r/templateson/nav.png" width="2880" height="200" loading="lazy" decoding="async"
-               alt="The TemplatesOn top navigation bar, packed with links: Pricing, Templates, Blog, Features, Usage, Compare, Use cases, Contact.">
-          <span class="annot" style="left:25.5%;top:24%;width:49.5%;height:48%;">
-            <span class="annot-label">20+ nav items competing</span>
+          <img src="/assets/r/templateson/fix-pills.png" width="2400" height="680" loading="lazy" decoding="async"
+               alt="A TemplatesOn section led by a cyan 'Everything it renders' pill, above a row of feature cards.">
+          <span class="annot" style="left:4.2%;top:18.5%;width:18.6%;height:9.8%;">
+            <span class="annot-label">Accent pill overused</span>
           </span>
         </div>
       </figure>
-      <div class="fix-notes">
-        <p class="fix-note"><span class="fix-note-label">Why it matters</span>A packed menu makes a first-time visitor work to find the one thing they actually came for.</p>
-        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Group the nav down to the 4-5 items that matter most and tuck the rest under a single "More" menu.</p>
-      </div>
     </div>
 
-    <!-- Block 3: carousel -->
+    <!-- Block 3: weak heading -->
     <div class="fix">
       <div class="fix-head">
         <span class="fix-num">03</span>
         <div class="fix-copy">
-          <h3>A feature block repeats in the carousel.</h3>
-          <p>The same card shows up twice as you scroll, which makes the page feel longer than it is and dilutes the strong stuff. Cut the duplicate.</p>
+          <p>'Built for automated output' as a heading is technically true but it's also… forgettable? You've got rocket fuel in 'Wire up your data once and let finished files generate themselves' - promote that thought up, make it the headline, and watch it land harder.</p>
         </div>
       </div>
       <figure class="shot">
@@ -643,17 +606,13 @@
           <span class="shot-url">templateson.com</span>
         </div>
         <div class="shot-canvas">
-          <img src="/assets/r/templateson/carousel.png" width="2880" height="660" loading="lazy" decoding="async"
-               alt="The TemplatesOn feature carousel, a horizontal row of cards including a duplicated feature block.">
-          <span class="annot" style="left:26.5%;top:24%;width:18%;height:54%;">
-            <span class="annot-label">Repeated card</span>
+          <img src="/assets/r/templateson/fix-heading.png" width="2400" height="720" loading="lazy" decoding="async"
+               alt="The TemplatesOn 'Built for automated output' section heading above its supporting sub-line.">
+          <span class="annot" style="left:28.7%;top:23.3%;width:42.5%;height:13.9%;">
+            <span class="annot-label">Weak heading</span>
           </span>
         </div>
       </figure>
-      <div class="fix-notes">
-        <p class="fix-note"><span class="fix-note-label">Why it matters</span>The repeat makes the page feel longer and padded, which quietly lowers trust in the strong parts.</p>
-        <p class="fix-note"><span class="fix-note-label">Suggested fix</span>Remove the duplicate card so each feature in the carousel appears exactly once.</p>
-      </div>
     </div>
 
   </div>
