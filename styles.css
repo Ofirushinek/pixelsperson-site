@@ -1172,10 +1172,12 @@ h2 .line {
   grid-template-columns: 1fr 1fr;
   column-gap: 72px;
   align-items: center;
-  margin-bottom: 28px;
 }
 
-.tl-item:last-child { margin-bottom: 0; }
+/* Interleave: pull each card up beside the previous one on the opposite side so
+   the zig-zag tightens and there is no dead diagonal space between entries.
+   Reset in the single-column mobile layout below. */
+.tl-item + .tl-item { margin-top: -72px; }
 
 /* Node on the spine, centred on the card. 13px with a 4px --background halo so
    the spine reads as passing behind it. */
@@ -1204,7 +1206,7 @@ h2 .line {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  padding: 22px 24px;
+  padding: 20px 22px;
   transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
@@ -2235,7 +2237,8 @@ h2 .line {
      sits to its right, full width. */
   .tl { max-width: none; padding: 4px 0; }
   .tl::before { left: 7px; transform: none; }
-  .tl-item { grid-template-columns: minmax(0, 1fr); column-gap: 0; align-items: start; margin-bottom: 16px; }
+  .tl-item { grid-template-columns: minmax(0, 1fr); column-gap: 0; align-items: start; margin-bottom: 14px; }
+  .tl-item + .tl-item { margin-top: 0; }
   .tl-card, .tl-right .tl-card { grid-column: 1; margin-left: 34px; }
   .tl-card::after { display: none; }
   .tl-item::before { left: 7px; top: 30px; transform: translate(-50%, 0); }
