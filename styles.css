@@ -1051,14 +1051,16 @@ h2 .line {
    -------------------------------------------------------------------------- */
 .pillar-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
 }
 
 .pillar { display: flex; flex-direction: column; }
 
-/* The art panel. Tone 2 on the first pillar, tone 3 on the second, so the
-   two subtle colors are introduced here and then recur down the page. */
+/* The art panel. Tone 2 on the first pillar, tone 3 on the second, tone 1 on
+   the third, so all three subtle surface tokens are introduced here and then
+   recur down the page. No new token: the third card takes --tone-neutral, the
+   same surface already used by the browser bar and the wireframe chips. */
 .pillar-art {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1069,8 +1071,9 @@ h2 .line {
   justify-content: center;
 }
 
-.art-cool { background: var(--tone-cool); }
-.art-warm { background: var(--tone-warm); }
+.art-cool    { background: var(--tone-cool); }
+.art-warm    { background: var(--tone-warm); }
+.art-neutral { background: var(--tone-neutral); }
 
 .pillar-art svg {
   width: 100%;
