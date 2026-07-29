@@ -106,10 +106,12 @@
    reads on light imagery without washing the poster. */
 .shot.is-playing .player-ui { opacity: 0; pointer-events: none; }
 
-/* ---- THREE THINGS I LOVED: three clean tiles ----------------------------- */
-/* A row of 3 equal cards, each carrying a title + description. No selection
-   state, no preview, no annotation - just three clean statements. Reuses the
-   .section-head / card vocabulary and existing type tokens. Zero new tokens. */
+/* ---- THREE THINGS I LOVED: selectable tiles ------------------------------ */
+/* A row of 3 tiles; each tile is a big select-one button carrying BOTH its
+   title and its description. Exactly one is active (first by default). One
+   shared preview area sits beneath and shows the active tile's clean capture.
+   Selected = --accent border doubled by an inner ring (no reflow) + --tone-cool
+   fill. Reuses the .shot-plain frame for the preview. Zero new tokens. */
 .tile-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -119,10 +121,29 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  -webkit-appearance: none;
+          appearance: none;
+  text-align: left;
+  cursor: pointer;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 20px;
+  font: inherit;
+  color: inherit;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+.tile:hover { border-color: var(--line); }
+.tile:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.tile.is-active {
+  border-color: var(--accent);
+  background: var(--tone-cool);
+  /* inner ring doubles the 1px border to read as a 2px accent frame with no
+     layout shift when a tile becomes active. */
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 .tile-title {
   font-size: var(--text-h3);
@@ -135,6 +156,14 @@
   line-height: 1.5;
   color: var(--foreground-secondary);
 }
+.tile.is-active .tile-desc { color: var(--foreground); }
+/* shared preview area beneath the row */
+.tile-preview { margin-top: 28px; }
+.tile-panel { display: none; }
+.tile-panel.is-active { display: block; }
+/* bar-less variant of the .shot frame: a clean framed capture, no chrome */
+.shot-plain { margin: 0; }
+.shot-plain .shot-canvas { border-radius: inherit; }
 
 /* ---- 3 THINGS I'D TIGHTEN: stacked annotated screenshots (centerpiece) --- */
 .fix { margin-top: 56px; }
@@ -391,6 +420,7 @@
   .annot-label { height: 20px; font-size: 11px; padding: 0 7px; }
   /* tiles stack to a single column so the title + description stay readable */
   .tile-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .tile-preview { margin-top: 20px; }
   /* the closing buttons stack full-width on phones, primary above the two
      secondaries in a single full-width column, matching the .contact action-row
      mobile treatment. width:auto lets the block fill the padded column. */
@@ -459,8 +489,9 @@
 </section>
 
 <!-- ==========================================================================
-     2. THREE THINGS I LOVED - three clean tiles (title + description).
-     No preview, no selection, no annotations.
+     2. THREE THINGS I LOVED - three selectable tiles (title + description
+     together), one shared preview beneath. First tile active by default.
+     Each preview is a CLEAN capture of coast.masn.studio - no annotations.
      ========================================================================== -->
 <section class="section pillars">
   <div class="wrap">
@@ -468,18 +499,49 @@
       <p class="eyebrow">The good</p>
       <h2>Three things I loved</h2>
     </div>
-    <div class="tile-row">
-      <div class="tile">
-        <span class="tile-title">The tagline lands</span>
-        <span class="tile-desc">'Your Desk, in hand' - seven syllables that make the whole concept click. Memorable, clear, and it sounds like something a person would actually say. That's rare.</span>
+    <div class="tiles" id="winTiles">
+      <div class="tile-row" role="tablist" aria-label="Three things I loved">
+        <button type="button" class="tile is-active" role="tab" id="wt1" aria-controls="wp1" aria-selected="true">
+          <span class="tile-title">The tagline lands</span>
+          <span class="tile-desc">'Your Desk, in hand' - seven syllables that make the whole concept click. Memorable, clear, and it sounds like something a person would actually say. That's rare.</span>
+        </button>
+        <button type="button" class="tile" role="tab" id="wt2" aria-controls="wp2" aria-selected="false" tabindex="-1">
+          <span class="tile-title">Demo-first, and confident</span>
+          <span class="tile-desc">Putting a full demo video right at the top is a confident move - the product only makes sense when you see it in action, so they lead with the thing that does all the work.</span>
+        </button>
+        <button type="button" class="tile" role="tab" id="wt3" aria-controls="wp3" aria-selected="false" tabindex="-1">
+          <span class="tile-title">Use cases that respect your time</span>
+          <span class="tile-desc">Media, Editing, Macros, Touch ring, Shortcuts - you land wondering 'what would I actually use this for?' and there are five answers right there.</span>
+        </button>
       </div>
-      <div class="tile">
-        <span class="tile-title">Demo-first, and confident</span>
-        <span class="tile-desc">Putting a full demo video right at the top is a confident move - the product only makes sense when you see it in action, so they lead with the thing that does all the work.</span>
-      </div>
-      <div class="tile">
-        <span class="tile-title">Use cases that respect your time</span>
-        <span class="tile-desc">Media, Editing, Macros, Touch ring, Shortcuts - you land wondering 'what would I actually use this for?' and there are five answers right there.</span>
+
+      <div class="tile-preview">
+        <div class="tile-panel is-active" role="tabpanel" id="wp1" aria-labelledby="wt1">
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/coast/tab-hero.png" width="2880" height="1624" loading="lazy" decoding="async"
+                   alt="The Coast hero: the boat logo, the 'Coast' wordmark and the 'Your Desk, in hand.' tagline above the App Store and Download for Mac buttons.">
+            </div>
+          </figure>
+        </div>
+
+        <div class="tile-panel" role="tabpanel" id="wp2" aria-labelledby="wt2" hidden>
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/coast/tab-demo.png" width="2880" height="1348" loading="lazy" decoding="async"
+                   alt="The Coast demo video near the top of the page: a Mac running a pixel-art editor with the Coast iPhone control surface (Pencil, Eraser, Move, Macros, touch ring) driving it.">
+            </div>
+          </figure>
+        </div>
+
+        <div class="tile-panel" role="tabpanel" id="wp3" aria-labelledby="wt3" hidden>
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/coast/tab-usecases.png" width="2880" height="1764" loading="lazy" decoding="async"
+                   alt="The Coast 'Build anything.' section: the Media, Editing, Macros, Touch ring and Shortcuts use-case chips beside a phone showing a control surface.">
+            </div>
+          </figure>
+        </div>
       </div>
     </div>
   </div>
@@ -638,6 +700,48 @@
   video.addEventListener("play", function () {
     wrap.classList.add("is-playing");
     enableControls();
+  });
+})();
+</script>
+
+<!-- Three-things-I-loved tiles: click (or arrow-key) a tile to select it and
+     show its clean capture in the shared preview beneath. First tile is
+     selected on load. No new tokens, no new markup vocabulary - the preview
+     reuses the .shot frame. Same component as /r/templateson and /r/oats. -->
+<script>
+(function () {
+  var group = document.getElementById("winTiles");
+  if (!group) return;
+  var tabs = [].slice.call(group.querySelectorAll(".tile"));
+  var panels = [].slice.call(group.querySelectorAll(".tile-panel"));
+
+  function activate(i, focus) {
+    tabs.forEach(function (t, j) {
+      var on = j === i;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach(function (p, j) {
+      var on = j === i;
+      p.classList.toggle("is-active", on);
+      if (on) { p.removeAttribute("hidden"); } else { p.setAttribute("hidden", ""); }
+    });
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { activate(i, false); });
+    t.addEventListener("keydown", function (e) {
+      var n;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") { n = (i + 1) % tabs.length; }
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { n = (i - 1 + tabs.length) % tabs.length; }
+      else if (e.key === "Home") { n = 0; }
+      else if (e.key === "End") { n = tabs.length - 1; }
+      else { return; }
+      e.preventDefault();
+      activate(n, true);
+    });
   });
 })();
 </script>
