@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>A UX review for Hardbook - Ofir Rushinek</title>
+<meta name="description" content="I recorded myself using Hardbook. Three things I loved, two I'd tighten. A short UX review from Ofir Rushinek.">
+<meta name="theme-color" content="#F8FAFC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Inter: the Glimps design system typeface (design-system.md, sec. 2.1) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- The one shared design system. This page adds NO new tokens - every value
+     below comes from styles.css :root. -->
+<link rel="stylesheet" href="/styles.css?v=202607281529">
+
+<!-- ==========================================================================
+     REVIEW-PAGE COMPOSITION (pixelsperson.com/r/<company>)
+     Scoped, additive CSS. It composes existing components and tokens only:
+       - .site-header / .site-footer / .section / .section-head / .eyebrow
+         / .btn / .browser frame  reused as-is from styles.css
+       - the annotation callout is built entirely from --accent, --radius-*,
+         --shadow-*, --text-caption and color-mix on --accent. No raw hex,
+         no new color, no new vocabulary. It reads as a Figma frame-selection:
+         an accent-outlined region with a small filled label tag at its corner.
+     ========================================================================== -->
+<style>
+/* ---- HERO (single column - no art variant of the main .hero) ------------- */
+.review-hero {
+  position: relative;
+  padding: 88px 0 72px;
+  background:
+    linear-gradient(180deg, var(--tone-warm), var(--background)),
+    var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.review-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--dots);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+          mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+.review-hero .wrap { position: relative; }
+
+/* Two-column hero: copy left, the maker's own homepage (browser-framed) right.
+   Composes the existing .shot browser-frame vocabulary - no new tokens. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: 56px;
+  align-items: center;
+}
+.rh-copy { min-width: 0; }
+.review-hero h1 {
+  /* Sized to its OWN 430px copy column (0.86fr of the hero grid), not the main
+     site hero's 52px. At 52px the unit "using <Company>." renders ~470px and
+     cannot break cleanly inside 430px, which is the ragged wrap Ofir saw.
+     Capped at --text-display (36px), floored at --text-h1 (24px) for phones -
+     both existing tokens, zero new tokens. */
+  font-size: clamp(var(--text-h1), 6vw, var(--text-display));
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin: 0 0 20px;
+  max-width: 22ch;
+}
+/* Deterministic headline break, company-name-independent:
+   "using <Company>." is ONE unbreakable unit, so sentence 1 always resolves to
+   "I recorded myself" / "using <Company>." - never a lone "using" or a lone
+   name. The <br> in the markup then keeps "Here's what I saw." on its own line
+   at every width. No reliance on text-wrap:balance (unreliable across the
+   inline span). Holds for any name that fits the column at 36px (~24 chars). */
+.review-hero h1 .hd-unit { white-space: nowrap; }
+.review-hero .rh-sub {
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  color: var(--foreground-secondary);
+  margin: 0;
+}
+/* review-hero-scoped names: styles.css already binds .hero-copy/.hero-art to
+   grid-area on the main site's hero, so this page uses its own prefix. */
+.rh-art { min-width: 0; }
+.rh-art .shot { margin: 0; box-shadow: var(--shadow-2xl); }
+
+/* HERO VIDEO: the maker's own homepage is the poster (still framed in the
+   hard-book.com browser chrome), and pressing play reveals the review.
+   Reuses the .shot browser frame + the click-to-play .player-ui composition
+   below - no new tokens. home.png (2880x1800) and session-voiced.mp4 (1440x900)
+   share the same 16:10 ratio, so cover never crops the poster. */
+.hero-canvas { aspect-ratio: 16 / 10; background: var(--modal-bg); }
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--modal-bg);
+  display: block;
+}
+/* No dark scrim at rest: the poster shows the maker's clean homepage exactly.
+   The play button carries its own contrast (accent disc + white ring), so it
+   reads on light imagery without washing the poster. */
+.shot.is-playing .player-ui { opacity: 0; pointer-events: none; }
+
+/* ---- THREE THINGS I LOVED: selectable tiles ------------------------------ */
+/* A row of 3 tiles; each tile is a big select-one button carrying BOTH its
+   title and its description. Exactly one is active (first by default). One
+   shared preview area sits beneath and shows the active tile's clean capture.
+   Selected = --accent border doubled by an inner ring (no reflow) + --tone-cool
+   fill. Reuses the .shot-plain frame for the preview. Zero new tokens. */
+.tile-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  -webkit-appearance: none;
+          appearance: none;
+  text-align: left;
+  cursor: pointer;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  font: inherit;
+  color: inherit;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+.tile:hover { border-color: var(--line); }
+.tile:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.tile.is-active {
+  border-color: var(--accent);
+  background: var(--tone-cool);
+  /* inner ring doubles the 1px border to read as a 2px accent frame with no
+     layout shift when a tile becomes active. */
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.tile-title {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+.tile-desc {
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--foreground-secondary);
+}
+.tile.is-active .tile-desc { color: var(--foreground); }
+/* shared preview area beneath the row */
+.tile-preview { margin-top: 28px; }
+.tile-panel { display: none; }
+.tile-panel.is-active { display: block; }
+/* bar-less variant of the .shot frame: a clean framed capture, no chrome */
+.shot-plain { margin: 0; }
+.shot-plain .shot-canvas { border-radius: inherit; }
+
+/* ---- 3 THINGS I'D TIGHTEN: stacked annotated screenshots (centerpiece) --- */
+.fix { margin-top: 56px; }
+.fix:first-of-type { margin-top: 0; }
+.fix-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+  max-width: 720px;
+}
+.fix-num {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  line-height: 1.2;
+}
+/* Each tighten block renders the reviewer's single paragraph next to its number,
+   then the annotated screenshot beneath. One paragraph per item - no secondary
+   "why/fix" notes - so the fix-copy carries just the review sentence at
+   --text-body-lg. Reuses existing type tokens only. */
+.fix-copy p {
+  margin: 0;
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  color: var(--foreground);
+}
+/* Closing verdict for the tighten section: one centred statement, one step down
+   from the section h2, at --text-h3. Reuses existing type tokens - no new
+   tokens, no new colour. */
+.fix-closing {
+  margin: 56px auto 0;
+  max-width: 720px;
+  text-align: center;
+  font-size: var(--text-h3);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+/* the screenshot frame reuses the .browser vocabulary (bar + shot). */
+.shot {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.shot-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--tone-neutral);
+  border-bottom: 1px solid var(--border);
+}
+.shot-dots { display: inline-flex; gap: 7px; flex: none; }
+.shot-dots i {
+  width: 10px; height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--line);
+}
+.shot-url {
+  flex: 1;
+  max-width: 240px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-caption);
+  color: var(--foreground-secondary);
+}
+.shot-canvas { position: relative; line-height: 0; }
+.shot-canvas img { display: block; width: 100%; height: auto; }
+
+/* THE ANNOTATION CALLOUT. Accent-outlined region + a filled corner label,
+   the way a selected frame reads in Figma. Region fill and outer ring are
+   color-mix on --accent so no raw color enters the page. */
+.annot {
+  position: absolute;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.annot-label {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  transform: translateY(-100%);
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  background: var(--accent);
+  color: var(--primary-foreground);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+/* ---- WHO'S BEHIND THIS ---------------------------------------------------- */
+.who-body p {
+  font-size: var(--text-body-lg);
+  line-height: 1.7;
+  color: var(--foreground);
+  margin: 0 0 20px;
+  max-width: 62ch;
+}
+.who-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+.who-link:hover { text-decoration: underline; }
+
+/* ---- CLICK-TO-PLAY OVERLAY (shared by the hero video) --------------------- */
+/* The overlay is a real button: full-bleed click target over the poster. */
+.player-ui {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1;
+  width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  -webkit-appearance: none;
+          appearance: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  transition: opacity 160ms ease;
+}
+.play-btn {
+  width: 76px; height: 76px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* white ring (--card) separates the accent disc from any content behind it
+     on a light poster; --shadow-2xl gives soft depth. Reads clearly with no
+     scrim. No new tokens. */
+  box-shadow: 0 0 0 6px var(--card), var(--shadow-2xl);
+}
+.play-btn svg { width: 26px; height: 26px; margin-left: 4px; }
+
+/* ---- CLOSING CTA (dark, reuses the .contact surface family) --------------- */
+/* Deliberate hierarchy, loudest to quietest:
+     (1) .close-invite  - the reply invitation. It is TEXT, not a button, at the
+         largest step on this surface (--text-h1), so it reads as an invitation
+         to reply, not a click target.
+     (2) the book-a-call button - PRIMARY, the SOLID variant (.btn-invert):
+         --modal-text (#FAFAFA) fill, --modal-bg (#1B1B1D) text. This is the
+         permanent main action, so it carries the loudest control weight on the
+         block - the same white-on-dark primary the .contact surface uses.
+     (3) the LinkedIn + Email buttons - SECONDARY, the OUTLINE variant
+         (.btn-secondary), transparent fill over the dark band so the surface
+         shows through, with a --modal-text-muted border and --modal-text label.
+         Two real buttons in a row, one clear step below the solid primary.
+     (4) .close-optout   - the quietest element: a fine-print opt-out note, but
+         readable (--modal-text-secondary, ~7:1 on --modal-bg), not the near-
+         invisible --modal-text-muted (4.0:1) it used before.
+   Zero new tokens - .btn-invert, .btn-secondary and every colour here already
+   exist in styles.css. */
+.close-band { background: var(--modal-bg); }
+.close-band .wrap { text-align: center; }
+.close-invite {
+  font-size: var(--text-h1);
+  line-height: 1.5;
+  color: var(--modal-text);
+  margin: 0 auto;
+  max-width: 26ch;
+  font-weight: 500;
+}
+/* The column is fit-content and centred, and its children stretch to its width,
+   so the solid primary and the secondary pair share ONE width and the whole
+   block is centred as a group - identical to the main page's .contact-actions. */
+.close-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 32px auto 0;
+}
+/* The two outline secondaries (LinkedIn + Email) sit in their own row beneath
+   the solid primary as a 2-column equal grid: always the same width as each
+   other, stretched to the shared width. Single column on narrow screens. */
+.close-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+.close-optout {
+  margin: 28px auto 0;
+  font-size: var(--text-caption);
+  line-height: 1.6;
+  /* Was --modal-text-muted (#71717A, 4.0:1 on --modal-bg) - legible in theory
+     but visually near-invisible as fine print. Stepped up to
+     --modal-text-secondary (#A1A1AA, ~7:1) so it reads clearly, while still
+     sitting a full step below the buttons as the quietest element. */
+  color: var(--modal-text-secondary);
+}
+
+/* Dark-surface outline button + focus ring - same recolor precedent as
+   .contact .btn-secondary in styles.css (one outline button, recoloured per
+   surface, hover fills --modal-surface-hover instead of solid white so the
+   primary/secondary hierarchy holds). The global focus ring (--ring #020817)
+   is invisible on --modal-bg, so it is re-pointed to --modal-text here, exactly
+   as the .contact surface already does. */
+.close-band .btn-secondary {
+  border-color: var(--modal-text-muted);
+  color: var(--modal-text);
+}
+.close-band .btn-secondary:hover {
+  background: var(--modal-surface-hover);
+  border-color: var(--modal-text);
+  color: var(--modal-text);
+}
+.close-band :focus-visible { outline-color: var(--modal-text); }
+
+/* ---- RESPONSIVE ---------------------------------------------------------- */
+@media (max-width: 860px) {
+  /* hero art drops under the title, kept compact and left-aligned */
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .rh-art { max-width: 560px; }
+}
+@media (max-width: 620px) {
+  .review-hero { padding: 64px 0 48px; }
+  .hero-grid { gap: 28px; }
+  .fix-head { flex-direction: row; gap: 12px; }
+  .annot-label { height: 20px; font-size: 11px; padding: 0 7px; }
+  /* tiles stack to a single column so the title + description stay readable */
+  .tile-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .tile-preview { margin-top: 20px; }
+  /* the closing buttons stack full-width on phones, primary above the two
+     secondaries in a single full-width column, matching the .contact action-row
+     mobile treatment. width:auto lets the block fill the padded column. */
+  .close-actions { align-items: stretch; gap: 12px; width: auto; }
+  .close-secondary { grid-template-columns: 1fr; gap: 12px; }
+  /* The book-a-call label is long; with the .btn default (white-space:nowrap +
+     32px side padding) it exceeds the 288px content column at 320px. On narrow
+     screens only, let it wrap and tighten the padding, keeping a 44px min tap
+     height. Scoped to .close-band so the .btn component is unchanged elsewhere. */
+  .close-band .btn {
+    white-space: normal;
+    height: auto;
+    min-height: 44px;
+    padding: 12px 24px;
+    line-height: 1.3;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="wordmark" href="https://pixelsperson.com" style="text-decoration:none;color:inherit;">Ofir Rushinek</a>
+    <a class="nav-cta" href="https://pixelsperson.com/#contact">Get in touch</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ==========================================================================
+     1. HEADER (personalized)
+     ========================================================================== -->
+<section class="review-hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="rh-copy">
+        <h1>I recorded myself <span class="hd-unit">using Hardbook.</span><br>Here's what I saw.</h1>
+        <p class="rh-sub">Hardbook fixes one specific thing for freelancers - turning an agreed-upon date into a locked-in, paid booking without all the back-and-forth.</p>
+      </div>
+      <div class="rh-art">
+        <figure class="shot" id="reviewPlayer">
+          <div class="shot-bar" aria-hidden="true">
+            <span class="shot-dots"><i></i><i></i><i></i></span>
+            <span class="shot-url">hard-book.com</span>
+          </div>
+          <div class="shot-canvas hero-canvas">
+            <video class="hero-video" id="reviewVideo" playsinline preload="metadata"
+                   poster="/assets/r/hardbook/home.png"
+                   aria-label="The full UX review recording of Hardbook">
+              <source src="/assets/r/hardbook/session-voiced.mp4" type="video/mp4">
+              Your browser can't play embedded video.
+              <a href="/assets/r/hardbook/session-voiced.mp4">Download the recording</a>.
+            </video>
+            <button type="button" class="player-ui" id="reviewPlay" aria-label="Play the review of Hardbook">
+              <span class="play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="var(--primary-foreground)"><path d="M6 4.5v15l14-7.5z"/></svg>
+              </span>
+            </button>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     2. THREE THINGS I LOVED - three selectable tiles (title + description
+     together), one shared preview beneath. First tile active by default.
+     Each preview is a CLEAN capture of hard-book.com - no annotations.
+     ========================================================================== -->
+<section class="section pillars">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The good</p>
+      <h2>Three things I loved</h2>
+    </div>
+    <div class="tiles" id="winTiles">
+      <div class="tile-row" role="tablist" aria-label="Three things I loved">
+        <button type="button" class="tile is-active" role="tab" id="wt1" aria-controls="wp1" aria-selected="true">
+          <span class="tile-title">A headline that names the dread</span>
+          <span class="tile-desc">That hero headline - 'The gap between agreed dates and a signed contract is where freelance jobs die' - feels like someone finally said the quiet part out loud. It names the exact moment of dread we all know, and suddenly you're nodding before you even scroll.</span>
+        </button>
+        <button type="button" class="tile" role="tab" id="wt2" aria-controls="wp2" aria-selected="false" tabindex="-1">
+          <span class="tile-title">Proof, not decoration</span>
+          <span class="tile-desc">The mock booking portal on the right is doing serious work - it's not just decoration, it's proof the thing actually exists and looks like something you'd be proud to send. That visual confidence matters when you're asking someone to trust a new tool.</span>
+        </button>
+        <button type="button" class="tile" role="tab" id="wt3" aria-controls="wp3" aria-selected="false" tabindex="-1">
+          <span class="tile-title">Three friction-killers, one line</span>
+          <span class="tile-desc">'Free to start, no credit card, live in ten minutes' - all three friction-killers in one clean line. No fluff, no asterisks, just the three answers that let someone decide right now whether to try it.</span>
+        </button>
+      </div>
+
+      <div class="tile-preview">
+        <div class="tile-panel is-active" role="tabpanel" id="wp1" aria-labelledby="wt1">
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/hardbook/tab-headline.png" width="1260" height="864" loading="lazy" decoding="async"
+                   alt="The Hardbook hero headline: 'The gap between agreed dates and a signed contract is where freelance jobs die.'">
+            </div>
+          </figure>
+        </div>
+
+        <div class="tile-panel" role="tabpanel" id="wp2" aria-labelledby="wt2" hidden>
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/hardbook/tab-portal.png" width="1150" height="1320" loading="lazy" decoding="async"
+                   alt="The Hardbook mock booking portal on the right of the hero: a client-branded page for Tomer Veer showing 'Hard booked.', the dates, a signed MSA, and a timestamped audit.">
+            </div>
+          </figure>
+        </div>
+
+        <div class="tile-panel" role="tabpanel" id="wp3" aria-labelledby="wt3" hidden>
+          <figure class="shot shot-plain">
+            <div class="shot-canvas">
+              <img src="/assets/r/hardbook/tab-friction.png" width="1300" height="336" loading="lazy" decoding="async"
+                   alt="The Hardbook hero call to action: the 'Try it on a real client' button above the single line 'Free to start | No credit card | Live in ten minutes'.">
+            </div>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     3. TWO THINGS I'D TIGHTEN - the centerpiece.
+     Each block = a real headless capture of hard-book.com with an
+     accent-outlined region + corner label pointing at the exact area.
+     The video names exactly two improvements, so there are exactly two blocks.
+     ========================================================================== -->
+<section class="section background">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The gaps</p>
+      <h2>Two things I'd tighten</h2>
+    </div>
+
+    <!-- Block 1: the concept isn't stated fast enough - put it in the subhead -->
+    <div class="fix">
+      <div class="fix-head">
+        <span class="fix-num">01</span>
+        <div class="fix-copy">
+          <p>That big headline is killer, but it does make me work a second to land on what the product IS - a one-link booking-and-contract tool for freelancers. I'd slip that clarity into the subhead right under it, something like 'One link. Your client picks dates and signs - then the booking is locked and paid.' Make the concept unmissable before someone scrolls.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="shot-bar" aria-hidden="true">
+          <span class="shot-dots"><i></i><i></i><i></i></span>
+          <span class="shot-url">hard-book.com</span>
+        </div>
+        <div class="shot-canvas">
+          <img src="/assets/r/hardbook/fix-subhead.png" width="2880" height="1200" loading="lazy" decoding="async"
+               alt="The Hardbook hero: the big headline above its subhead line, with the subhead under the headline highlighted.">
+          <span class="annot" style="left:11.53%;top:76.33%;width:34.17%;height:18.50%;">
+            <span class="annot-label">Make the concept unmissable</span>
+          </span>
+        </div>
+      </figure>
+    </div>
+
+    <!-- Block 2: the role pill strip is low-contrast on the black bar -->
+    <div class="fix">
+      <div class="fix-head">
+        <span class="fix-num">02</span>
+        <div class="fix-copy">
+          <p>The role pill strip - 'Sound designers, Animators, Directors' - sits on a black bar with pretty low contrast, so it fades a bit when it should feel like a roll call. Lighten those pills or bump the text weight so the range of people this is for reads loud and clear.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="shot-bar" aria-hidden="true">
+          <span class="shot-dots"><i></i><i></i><i></i></span>
+          <span class="shot-url">hard-book.com</span>
+        </div>
+        <div class="shot-canvas">
+          <img src="/assets/r/hardbook/fix-pills.png" width="2880" height="420" loading="lazy" decoding="async"
+               alt="The Hardbook dark bar reading 'Made for one kind of person - maybe you' above a low-contrast strip of role pills: Sound designers, Animators, Directors, 3D artists, Compositors, Producers, and more.">
+          <span class="annot" style="left:1.53%;top:48.10%;width:96.94%;height:28.57%;">
+            <span class="annot-label">Let the roll call read loud</span>
+          </span>
+        </div>
+      </figure>
+    </div>
+
+    <p class="fix-closing">This is a page that knows its buyer, and it shows - tighten the clarity up top and you've got something that converts like crazy.</p>
+
+  </div>
+</section>
+
+<!-- ==========================================================================
+     4. WHO'S BEHIND THIS
+     ========================================================================== -->
+<section class="section who">
+  <div class="wrap wrap-narrow">
+    <div class="section-head">
+      <p class="eyebrow">Context</p>
+      <h2>Who's behind this</h2>
+    </div>
+    <div class="who-body">
+      <p>I'm Ofir, a Product Designer with 12+ years helping companies build better digital products.</p>
+      <p>This review was recorded by an AI tool I'm building - a persona that actually uses a live site and talks through it like a real user. Hardbook is one of the first it's looked at.</p>
+      <a class="who-link" href="https://pixelsperson.com">More about how I work <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     5. SOFT CLOSE
+     ========================================================================== -->
+<section class="section close-band">
+  <div class="wrap wrap-narrow">
+    <p class="close-invite">What do you think? Just reply and tell me what resonated - or what you disagree with.</p>
+    <div class="close-actions">
+      <!-- BOOKING LINK (PRIMARY): Ofir's Calendly booking link. Solid white
+           .btn-invert, on its own row. -->
+      <a class="btn btn-invert" href="https://calendly.com/ofir-rushinek/productlab" target="_blank" rel="noopener">Book a 30-minute UX strategy session</a>
+      <!-- Two SECONDARY actions in a row beneath: transparent outline
+           .btn-secondary on the dark band (LinkedIn + Email). -->
+      <div class="close-secondary">
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/ofirr/" target="_blank" rel="noopener noreferrer"><svg class="btn-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 8.98h4V21H3zM9 8.98h3.83v1.64h.05c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.14V21h-4v-5.44c0-1.3-.02-2.97-1.81-2.97-1.81 0-2.09 1.41-2.09 2.87V21H9z"/></svg>Connect on LinkedIn</a>
+        <a class="btn btn-secondary" href="mailto:ofir.rushinek@gmail.com"><svg class="btn-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Email</a>
+      </div>
+    </div>
+    <p class="close-optout">If you'd rather not get future reviews, just tell me.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- Review player: click-to-play. At rest the video has NO native controls -
+     only the poster (the maker's homepage) + the centered custom play button
+     show. On first play the overlay hands off to native controls (scrubber,
+     volume, fullscreen) so the viewer can drive playback; audio is on (not
+     muted). No new tokens, no new markup vocabulary - the overlay is the same
+     .player-ui composition. -->
+<script>
+(function () {
+  var wrap = document.getElementById("reviewPlayer");
+  var video = document.getElementById("reviewVideo");
+  var btn = document.getElementById("reviewPlay");
+  if (!wrap || !video || !btn) return;
+
+  // Enable the native control bar only once playback has begun, so the at-rest
+  // state stays poster + custom play button with no bottom control strip.
+  function enableControls() { video.controls = true; }
+
+  function start() {
+    wrap.classList.add("is-playing");
+    enableControls();
+    var p = video.play();
+    if (p && typeof p.catch === "function") { p.catch(function () {}); }
+  }
+  btn.addEventListener("click", start);
+  video.addEventListener("play", function () {
+    wrap.classList.add("is-playing");
+    enableControls();
+  });
+})();
+</script>
+
+<!-- Three-things-I-loved tiles: click (or arrow-key) a tile to select it and
+     show its clean capture in the shared preview beneath. First tile is
+     selected on load. No new tokens, no new markup vocabulary - the preview
+     reuses the .shot frame. Same component as /r/viewkit and /r/liso. -->
+<script>
+(function () {
+  var group = document.getElementById("winTiles");
+  if (!group) return;
+  var tabs = [].slice.call(group.querySelectorAll(".tile"));
+  var panels = [].slice.call(group.querySelectorAll(".tile-panel"));
+
+  function activate(i, focus) {
+    tabs.forEach(function (t, j) {
+      var on = j === i;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach(function (p, j) {
+      var on = j === i;
+      p.classList.toggle("is-active", on);
+      if (on) { p.removeAttribute("hidden"); } else { p.setAttribute("hidden", ""); }
+    });
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { activate(i, false); });
+    t.addEventListener("keydown", function (e) {
+      var n;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") { n = (i + 1) % tabs.length; }
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { n = (i - 1 + tabs.length) % tabs.length; }
+      else if (e.key === "Home") { n = 0; }
+      else if (e.key === "End") { n = tabs.length - 1; }
+      else { return; }
+      e.preventDefault();
+      activate(n, true);
+    });
+  });
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Ofir Rushinek</p>
+    <p>Product &amp; UX, at AI speed</p>
+  </div>
+</footer>
+
+</body>
+</html>
